@@ -1,0 +1,84 @@
+============================
+ GUÍA DE USO DE GIT (FORKS)
+============================
+
+Autor: ChatGPT (para [tu nombre])
+Última actualización: 2025-09-11
+
+------------------------------------------------------------
+1. IGNORAR CARPETAS NUEVAS Y SUBIR CAMBIOS AL FORK
+------------------------------------------------------------
+
+Si creaste carpetas como `semana1`, `semana2`, etc., dentro de `guia/` y NO querés subirlas a GitHub:
+
+**Comando en una sola línea:**
+
+echo -e "guia/semana1/\nguia/semana2/\nguia/semana3/\nguia/semana4/\nguia/semana6/" >> .gitignore && git rm --cached -r guia/semana1 guia/semana2 guia/semana3 guia/semana4 guia/semana6 && git add . && git commit -m "Commit sin las carpetas guia/semana1 a semana4 y semana6" && git push origin main
+
+Este comando:
+- Agrega las carpetas al `.gitignore`
+- Las elimina del "stage" si ya estaban
+- Agrega todo lo demás
+- Crea un commit
+- Hace `push` a tu repositorio fork
+
+------------------------------------------------------------
+2. SINCRONIZAR TU FORK CON EL REPO ORIGINAL (UPSTREAM)
+------------------------------------------------------------
+
+Pasos:
+
+1. Verificar si tenés agregado el repo original:
+   git remote -v
+
+2. Si no lo tenés, agregalo:
+   git remote add upstream https://github.com/autor-original/repositorio-original.git
+
+3. Traer cambios del original:
+   git fetch upstream
+
+4. Fusionar con tu rama:
+   git merge upstream/main
+
+5. Subir tus cambios a tu fork:
+   git push origin main
+
+------------------------------------------------------------
+3. ¿ERROR: "Your local changes would be overwritten by merge"?
+------------------------------------------------------------
+
+Este error aparece si tenés archivos modificados localmente sin guardar.
+
+💡 SOLUCIONES:
+
+A) Guardar tus cambios en un commit:
+   git add .
+   git commit -m "WIP: cambios antes de merge"
+   git merge upstream/main
+
+B) Guardar temporalmente con stash:
+   git stash
+   git merge upstream/main
+   git stash pop
+
+C) Descartar los cambios (¡solo si estás seguro!):
+   git restore .
+   git merge upstream/main
+
+------------------------------------------------------------
+4. COMANDOS ÚTILES
+------------------------------------------------------------
+
+Ver cambios:
+   git status
+   git diff
+
+Ver ramas:
+   git branch
+
+Ver remotos:
+   git remote -v
+
+------------------------------------------------------------
+FIN DE LA GUÍA
+------------------------------------------------------------
