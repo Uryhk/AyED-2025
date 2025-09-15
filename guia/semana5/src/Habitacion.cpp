@@ -1,5 +1,6 @@
 #include "Habitacion.h"
 #include <iostream>
+#include  <iterator>
 
 // ===== Constructores / básicos =====
 Habitacion::Habitacion() : nombre("sin_nombre") {}
@@ -68,7 +69,8 @@ const Sensor* Habitacion::obtenerConstRec(std::vector<Sensor>::const_iterator it
     //TODO: devolver puntero al sensor si coincide, si no, recursión con el resto
     if(it==fin)
     return nullptr;
-    if()
+    if(it->getNombre()== nombreSensor) return &(*it);
+    return obtenerConstRec(std::next(it),fin,nombreSensor);
     
 }
 
@@ -76,14 +78,21 @@ Sensor* Habitacion::obtenerRec(std::vector<Sensor>::iterator it,
                                std::vector<Sensor>::iterator fin,
                                const std::string& nombreSensor) {
     //TODO: devolver puntero al sensor si coincide, si no, recursión con el resto
-    return nullptr;
+   if(it==fin) return nullptr;
+        if (it->getNombre() == nombreSensor) 
+        return &(*it); 
+
+    return obtenerRec(std::next(it), fin, nombreSensor); 
+    
 }
 
 bool Habitacion::eliminarPorNombreRec(std::vector<Sensor>::iterator it,
                                       std::vector<Sensor>::iterator fin,
                                       const std::string& nombreSensor) {
     //TODO: si la cabeza coincide, borrar con erase; si no, recursión con el resto
-    return false;
+  if(it==fin) return false;
+    if(it->getNombre() == nombreSensor) erase(it) return true;
+    return eliminarPorNombreRec(std::next(it),fin,nombreSensor);
 }
 
 // ===== API pública (envoltorios) =====
