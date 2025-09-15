@@ -45,7 +45,8 @@ bool Habitacion::setValorRec(std::vector<Sensor>::iterator it,
                              float nuevoValor) {
     //TODO: si la cabeza coincide cambiar valor, si no, recursión con el resto
        if(it==fin) return false;
-    if(it->getNombre() == nombreSensor) setValor(nuevoValor);
+    if(it->getNombre() == nombreSensor) setValor(nuevoValor)
+        return true;
     return setValorRec(std::next(it),fin,nombreSensor,nuevoValor);
 }
 
@@ -54,14 +55,21 @@ bool Habitacion::setNombreRec(std::vector<Sensor>::iterator it,
                               const std::string& nombreActual,
                               const std::string& nombreNuevo) {
     //TODO: si la cabeza coincide cambiar nombre, si no, recursión con el resto
-    return false;
+    if(it==fin)return false;
+    if(it->getNombre() == nombreActual)setNombre(nombreNuevo)
+        return true;
+    return setNombreRec(std::next(it),fin,nombreActual,nombreNuevo)
+    
 }
 
 const Sensor* Habitacion::obtenerConstRec(std::vector<Sensor>::const_iterator it,
                                           std::vector<Sensor>::const_iterator fin,
                                           const std::string& nombreSensor) const {
     //TODO: devolver puntero al sensor si coincide, si no, recursión con el resto
+    if(it==fin)
     return nullptr;
+    if()
+    
 }
 
 Sensor* Habitacion::obtenerRec(std::vector<Sensor>::iterator it,
