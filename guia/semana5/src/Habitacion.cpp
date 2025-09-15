@@ -44,7 +44,9 @@ bool Habitacion::setValorRec(std::vector<Sensor>::iterator it,
                              const std::string& nombreSensor,
                              float nuevoValor) {
     //TODO: si la cabeza coincide cambiar valor, si no, recursión con el resto
-    return false;
+       if(it==fin) return false;
+    if(it->getNombre() == nombreSensor) setValor(nuevoValor);
+    return setValorRec(std::next(it),fin,nombreSensor,nuevoValor);
 }
 
 bool Habitacion::setNombreRec(std::vector<Sensor>::iterator it,
