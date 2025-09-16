@@ -10,7 +10,7 @@ Sensor::~Sensor() {
 
 void Sensor::configurarVentana(int k) {
     //TODO
-    merge sort
+ 
 }
 
 void Sensor::agregarLectura(float x) {
