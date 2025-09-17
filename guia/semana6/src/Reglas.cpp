@@ -2,7 +2,12 @@
 #include <cstdlib>   // std::strtof
 #include <iostream>
 
-// utilitario: ¿es operador aritmético/relacional?
+// utilitario: ¿es operador aritmético/relacional? 
+
+
+
+
+
 static bool esOpNum(const std::string& t) {
     return (t == ">" || t == "<" || t == "==" );
 }
