@@ -17,41 +17,41 @@ static bool esOpBool(const std::string& t) {
 
 bool Reglas::evaluarRPN(Habitacion* h, Lista<std::string>* tokens) {
     // TODO
-    Pila<bool> aux;
-       while (!tokens->isEmpty()) {
-        std::string token = tokens->head();
-        tokens->pop_front(); 
+    Pila<std::string> pila;  
+Lista<std::string>* copia = new Lista<std::string>();
+while(!tokens ->isEmpty()){
 
-        if (token == "AND" || token == "OR" || token == "NOT") {
-            
-            if (token == "NOT") {
-                if (aux.empty()) throw std::runtime_error("Faltan operandos");
-                bool a = aux.pop();
-                aux.push(!a);
-            } else if (token == "AND") {
-                if (aux.size() < 2) throw std::runtime_error("Faltan operandos");
-                bool b = aux.pop();
-                bool a = aux.pop();
-                aux.push(a && b);
-            } else if (token == "OR") {
-                if (aux.size() < 2) throw std::runtime_error("Faltan operandos");
-                bool b = aux.pop();
-                bool a = aux.pop();
-                aux.push(a || b);
-            }
-        } else {
-            const Sensor* s = h->obtenerConstRec(
-                h->sensores.begin(),
-                h->sensores.end(),
-                token
-            );
-            if (!s) throw std::runtime_error("Sensor no encontrado: " + token);
+std::string token = copia->pop_front();
 
-            aux.push(s->getValor()); 
-        }
-    }
+if(esOpNum(token)){
+float b = std::strtof(pila.pop().c_str(),nullptr);
+float a = std::strtof(pila.pop().c_str(),nullptr);
 
-    if (aux.size() != 1) throw std::runtime_error("Expresión RPN inválida");
+if(token==">")pila.push(a>b?"1":"0");
+else if(token=="<")pila.push(a<b?"1":"0");
+else if(token=="==")pila.push(a==b?"1":"0");
 
-    return aux.pop(); 
+}else if(esOpBool(token)){
+
+bool b = (pila.pop()!="0");
+bool a = (pila.pop()!="0");
+if(token=="&&")pila.push((a&&b)?"1":"0");
+else if(token=="||")pila.push((a||b)?"1":"0");
+
+
+}else if(token.rfind("ACT:",0)==0){
+
+std::string nom= token.substr(4);
+Sensor* sensor = h->obtenerSensor(nom);
+if(sensor)pila.push(std::to_string(sensor->getValor()));
+
+}else{
+    Sensor* sensor = h->obtenerSensor(token);
+    if(sensor)pila.push(std::to_string(sensor->getValor())); 
+    else pila.push(token);
+}
+      
+}
+
+
 }
