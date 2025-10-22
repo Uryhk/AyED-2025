@@ -45,6 +45,13 @@ public:
     
     
     private: 
+ template<class T>
+  Nodo<T>* ABB<T>::eraseRec(Nodo<T>* p, const T& x){
+
+
+  }
+
+     
     template <class T>
      int ABB<T>::tamRec(const Nodo<T>* p) const{
     //TODO
