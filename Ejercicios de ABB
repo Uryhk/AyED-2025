@@ -1,0 +1,190 @@
+#include <iostream>
+
+using namespace std;
+
+template <class T>
+class Nodo {
+public:
+    T dato;
+    Nodo* izq;
+    Nodo* der;
+    explicit Nodo(const T& x) : dato(x), izq(nullptr), der(nullptr) {}
+};
+
+template <class T>
+class ABB {
+private:
+    Nodo<T>* raiz = nullptr;
+
+    // ---- Helpers ----
+    int alturaRec(const Nodo<T>* p) const;
+    int tamRec(const Nodo<T>* p) const;
+    bool containsRec(const Nodo<T>* p, const T& x) const;
+    const Nodo<T>* minNode(const Nodo<T>* p) const;
+    const Nodo<T>* maxNode(const Nodo<T>* p) const;
+    Nodo<T>* eraseRec(Nodo<T>* p, const T& x);
+    void inordenRec(const Nodo<T>* p, std::vector<T>& out) const;
+    void clearRec(Nodo<T>* p);
+    Nodo<T>* insertarRec(Nodo<T>* p, const T& x);
+
+public:
+    ABB() = default;
+    ~ABB(){ clear(); }
+
+    bool isEmpty() const ;
+    void clear();
+    bool contains(const T& x);
+    void erase(const T& x);
+    const T& min() const;
+    const T& max() const;
+    int height() const;
+    int size()   const;
+    std::vector<T> inorden() const;
+    void insert(const T& x);
+    
+    
+    
+    private: 
+    template <class T>
+     int ABB<T>::tamRec(const Nodo<T>* p) const{
+    //TODO
+    if(!p)return 0;
+    else
+    return 1+tamRec(p->izq)+tamRec(p->der);}
+    
+     template <class T>
+    Nodo<T>* ABB<T>::insertarRec(Nodo<T>* p, const T& x){
+    //TODO
+    
+    if(p==nullptr){return new Nodo<T>(x);
+    
+    }else if(x < p->dato){
+    p->izq = insertarRec(p->izq,x);
+    }else if(x > p->dato){
+    p->der= insertarRec(p->der,x);
+    }else{}
+    return p;}
+    
+    template <class T>
+    int ABB<T>::alturaRec(const Nodo<T>* p) const{
+    //TODO:
+    if(!p)return 0;
+    else
+     return 1 + std::max(alturaRec(p->izq),alturaRec(p->der));
+    
+    }
+template <class T>
+bool ABB<T>::containsRec(const Nodo<T>* p, const T& x) const{
+    //TODO
+    if(!p)return false;
+    
+    if(p->dato==x)return true;
+    else if(p->dato>x)return containsRec(p->izq,x);
+    else return containsRec(p->der,x);
+}
+     template <class T>
+    void ABB<T>::inordenRec(const Nodo<T>* p, std::vector<T>& out) const{
+    //TODO:
+    if(!p)return;
+    inordenRec(p->izq,out);
+    out.push_back(p->dato);
+    inordenRec(p->der,out);
+}
+     template <class T>
+const Nodo<T>* ABB<T>::minNode(const Nodo<T>* p) const{
+    //TODO: 
+    if(!p)return nullptr; 
+
+    if(!p->izq)return p;
+       else return minNode(p->izq);
+}
+
+template <class T>
+const Nodo<T>* ABB<T>::maxNode(const Nodo<T>* p) const{
+    //TODO:
+  if(!p)return nullptr; 
+
+    if(!p->der)return p;
+       else return maxNode(p->der);
+}
+ 
+ 
+public:
+template <class T>
+int ABB<T>::size() const{
+    //TODO
+    return tamRec(raiz);
+    
+}
+
+    
+
+
+template <class T>
+void ABB<T>::insert(const T& x){
+    //TODO
+    this->raiz=insertarRec(this->raiz,x);
+}
+
+
+
+
+template <class T>
+int ABB<T>::height() const{
+    //TODO:
+    const int a = alturaRec(raiz);
+    return a;
+}
+
+
+
+template <class T>
+bool ABB<T>::contains(const T& x) const{
+    //TODO
+    bool a=containsRec(raiz,x);
+    return a;
+}
+
+
+template <class T>
+std::vector<T> ABB<T>::inorden() const{
+    //TODO:
+    std::vector<T> aux;
+    aux.reserve(this->size());
+    
+    inordenRec(this->raiz, aux); 
+    return aux;
+    
+}
+
+
+// Wrappers públicos que devuelven referencias a T
+template <class T>
+const T& ABB<T>::min() const{
+    //TODO:
+    
+     if(!raiz){ throw std::runtime_error("ABB vacio");
+    }else{
+  const Nodo<T>* min = minNode(this->raiz);
+  return min->dato;}
+   
+}
+
+template <class T>
+const T& ABB<T>::max() const{
+    //TODO:
+ 
+    if(!raiz){ throw std::runtime_error("ABB vacio");
+    }else{
+      const Nodo<T>* max =  maxNode(this->raiz);
+     return max->dato;}
+}
+
+
+};
+
+
+
+    
+
+
