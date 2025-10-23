@@ -47,7 +47,24 @@ public:
     private: 
  template<class T>
   Nodo<T>* ABB<T>::eraseRec(Nodo<T>* p, const T& x){
-
+ if(!p){return nullptr;} 
+        
+        if(x < p->dato){
+        p->izq=eraseRec(p->izq,x);
+        return p;}
+        
+        else if(x>p->dato){p->der = eraseRec(p->der, x);
+        return p;}
+        if (!p->izq) {
+        Nodo<T>* temp = p->der; 
+        delete p;               
+        return temp;            
+    }else{
+        Nodo<T>* sucesor = (Nodo<T>*)minNode(p->der);
+        p->dato = sucesor->dato;
+        p->der = eraseRec(p->der, sucesor->dato);
+        return p;
+    }
 
   }
 
