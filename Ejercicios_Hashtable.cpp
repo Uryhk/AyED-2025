@@ -108,37 +108,144 @@ public:
     
     void rehash(int nuevaCapacidad) {
         // TODO: crear una nueva tabla con capacidad mayor y redistribuir nodos
+        Nodo** nuevatabla =new Nodo*[nuevaCapacidad];//creo una tabla dinamica de forma puntero a puntero  y luego genero el espacio como un nodo de arreglos  con la nueva capacidad;
+        for(int i=0;i<nuevaCapacidad; ++i){nuevatabla[i]=nullptr;}//le asigno null a los nodos de arreglos en cada indice;
+        for(int i=0; i<CAP; i++){
+            Nodo* actual=tabla[i];//recorro tabla y guardo el primer nodo con la direccion del siguiente;
+            while(actual!=nullptr){
+            Nodo *siguiente=actual->siguiente;
+            
+            int indice= actual->clave%nuevaCapacidad;//calculo indice 
+            
+            actual->siguiente=nuevatabla[indie];//elimino el siguiente nodo igualando a null para acortarla lista
+            nuevatabla[indice]=actual; //asigno el primer y unico nodo ahora al indice 
+            actual=siguiente;//reasigno el nodo actual como el siguiente nodo volviendo a tener a lista sin el nodo 1 
+            }
+        }
+        
+        delete [] tabla;//elimino el espacion dinamico del pntero a pntero de arreglos;
+        tabla=nuevatabla;
+       CAP=nuevaCapacidad;
+     
     }
 
     bool contieneValor(const string& valor) const {
         // TODO: devolver true si el valor existe en la tabla
-        return false;
-    }
+        for(int i=0; i<CAP;i++){
+            Nodo* actual=tabla[i];
+            while(actual!=nullptr){
+            if(actual->valor == valor)return true;
+               actual=actual->siguiente;
+            }
+                
+            }
+            return false;
+        }
+        
+    
 
     vector<int> obtenerClaves() const {
         // TODO: devolver todas las claves almacenadas en la tabla
-        return vector<int>();
+        vector<int> out;
+       for(int i=0; i<CAP; i++){
+           Nodo* actual=tabla[i];
+           while(actual!=nullptr){
+               out.push_back(actual->clave);
+               actual=actual->siguiente;
+           }
+       }
+        return out;
+        
     }
 
     vector<int> colisionesPorBucket() const {
         // TODO: devolver un vector con la cantidad de nodos por bucket
-        return vector<int>();
+      
+            vector<int> out;
+            
+            for(int i=0; i<CAP; i++){
+           Nodo* actual=tabla[i];
+             int cont=0;
+           while(actual!=nullptr){
+               cont++;
+               actual=actual->siguiente;
+           }
+           out.push_back(cont);
+       }
+        return out;
     }
 
     double factorDeCarga() const {
         // TODO: calcular el factor de carga (total de elementos / CAP)
-        return 0.0;
+        
+        int telemento=0;
+        
+        for(int i=0; i<CAP; i++){
+            Nodo*actual=tabla[i];
+            while(actual!=nullptr){
+                telemento++;
+                actual=actual->siguiente;
+            }
+        }
+        
+        return (double)telemento/CAP;
     }
 
     string valorMasFrecuente() const {
         // TODO: devolver el valor que más se repite en la tabla
-        return "";
+        vector<string> aux;
+           
+        for(int i=0; i<CAP; i++){
+            Nodo*actual=tabla[i];
+            while(actual!=nullptr){
+                aux.push_back(actual->valor);
+                actual=actual->siguiente;
+            }
+        }
+        
+        string masrep="";
+        int maxre=0;
+        
+        for(int i=0; i<aux.size(); i++){
+            int contador=1;
+            for(int j=i+1; j<aux.size(); j++){
+             if(aux[i]==aux[j])contador++;
+            }
+            if(contador>maxre){
+                maxre=contador;
+                masrep=aux[i];
+            }
+        }
+        
+        
+        return masrep;
     }
 
-    vector<int> clavesConColision() const {
-        // TODO: devolver todas las claves que están en buckets con colisiones
-        return vector<int>();
+  vector<int> clavesConColision() const {
+    vector<int> aux;
+
+    for (int i = 0; i < CAP; i++) {
+        int contador = 0;
+        Nodo* actual = tabla[i];
+
+        Nodo* temp = actual;
+        while (temp != nullptr) {
+            contador++;
+            temp = temp->siguiente;
+        }
+
+
+        if (contador > 1) {
+            actual = tabla[i];
+            while (actual != nullptr) {
+                aux.push_back(actual->clave);
+                actual = actual->siguiente;
+            }
+        }
     }
+
+    return aux;
+}
 
     void merge(const HashTable& otra) {
         // TODO: fusionar otra tabla hash con esta, evitando duplicados
