@@ -45,6 +45,21 @@ public:
     
     
     private: 
+
+
+   template<class T>
+    void clear(){
+        clearRec(raiz);
+        raiz=nullptr
+    }
+    template<class T>
+    void clearRec(Nodo* p){
+        if(p==nullptr)return;
+        
+        clearRec(p->izq);
+        clearRec(p->der);
+        delete p;
+    }
  template<class T>
   Nodo<T>* ABB<T>::eraseRec(Nodo<T>* p, const T& x){
  if(!p){return nullptr;} 
