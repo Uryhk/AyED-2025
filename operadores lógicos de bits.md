@@ -5,7 +5,7 @@
 | Operador | Qué hace | Ejemplo |
 |----------|----------|---------|
 | `&` (AND) | Devuelve 1 si ambos bits son 1, sino 0 | `1010 & 1100 → 1000` |
-| `\|`(OR)  | Devuelve 1 si al menos uno de los bits es 1 | `1010 | 1100 → 1110` |
+| `\|`(OR)  | Devuelve 1 si al menos uno de los bits es 1 | `1010 \| 1100 → 1110` |
 | `^` (XOR) | Devuelve 1 si los bits son diferentes, 0 si son iguales | `1010 ^ 1100 → 0110` |
 | `~` (NOT) | Invierte todos los bits (1→0, 0→1) | `~1010 → 0101` |
 | `<<` (Shift left) | Mueve los bits a la izquierda n posiciones, rellenando con 0 | `1010 << 2 → 101000` |
