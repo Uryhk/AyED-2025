@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
  struct Nodo {
     int clave;
@@ -7,27 +8,40 @@ using namespace std;
     Nodo* siguiente;
 };
 
+
 // Tabla hash simple
 class HashTable {
 private:
-    static const int CAP = 10; // tamaño de la tabla
-    Nodo* tabla[CAP];
+    int CAP = 10; // tamaño de la tabla
+    Nodo** tabla;
 
     // Función hash simple
     int hashFunction(int clave) {
         return clave % CAP;
     }
 
+  
+          
+    int hashFunctionstring(string &str){
+        int hash=0;
+        for(char c : str){
+            hash=(hash*7+c)%CAP;
+        }
+        return hash;
+    }          
+          
+ 
+    
 public:
     // Constructor
-    HashTable() {
+    HashTable(int capacidadInicial = 10) : CAP(capacidadInicial) {
+        tabla = new Nodo*[CAP];  
         for (int i = 0; i < CAP; i++)
             tabla[i] = nullptr;
     }
-
     // Destructor
     ~HashTable() {
-        for (int i = 0; i < CAP; i++) {
+         for (int i = 0; i < CAP; i++) {
             Nodo* actual = tabla[i];
             while (actual) {
                 Nodo* temp = actual;
@@ -35,22 +49,69 @@ public:
                 delete temp;
             }
         }
+        delete[] tabla;  
     }
+      HashTable(const HashTable& otra) : CAP(otra.CAP) {
+        tabla = new Nodo*[CAP];
+        for (int i = 0; i < CAP; i++) {
+            tabla[i] = nullptr;
+            Nodo* actual = otra.tabla[i];
+            while (actual != nullptr) {
+                insertar(actual->clave, actual->valor);
+                actual = actual->siguiente;
+            }
+        }
+    }
+    
+    // Operador de asignación (IMPORTANTE con dinámico)
+    HashTable& operator=(const HashTable& otra) {
+        if (this != &otra) {
+            // Liberar memoria actual
+            for (int i = 0; i < CAP; i++) {
+                Nodo* actual = tabla[i];
+                while (actual) {
+                    Nodo* temp = actual;
+                    actual = actual->siguiente;
+                    delete temp;
+                }
+            }
+            delete[] tabla;
 
+            // Copiar nueva
+            CAP = otra.CAP;
+            tabla = new Nodo*[CAP];
+            for (int i = 0; i < CAP; i++) {
+                tabla[i] = nullptr;
+                Nodo* actual = otra.tabla[i];
+                while (actual != nullptr) {
+                    insertar(actual->clave, actual->valor);
+                    actual = actual->siguiente;
+                }
+            }
+        }
+        return *this;
+    }
+    
     // ==========================
     // Métodos a implementar
     // ==========================
     void insertar(int clave, const string& valor) {
         // TODO: crear nodo y agregarlo al bucket correspondiente
         int indice =hashFunction(clave);
-        Nodo *nuevo= new Nodo{clave,valor,nullptr};
+        Nodo*actual=tabla[indice];
+        while(actual!=nullptr){
+            if(actual->clave == clave){
+                actual->valor=valor;return;
+            }
+               actual= actual->siguiente;
+        }
         
+      Nodo *nuevo= new Nodo{clave,valor,nullptr};
       nuevo->siguiente=tabla[indice];
       tabla[indice]=nuevo;
         
         
     }
-
     bool eliminar(int clave) {
         // TODO: buscar clave y eliminar nodo
        int indice= hashFunction(clave);
@@ -117,7 +178,7 @@ public:
             
             int indice= actual->clave%nuevaCapacidad;//calculo indice 
             
-            actual->siguiente=nuevatabla[indie];//elimino el siguiente nodo igualando a null para acortarla lista
+            actual->siguiente=nuevatabla[indice];//elimino el siguiente nodo igualando a null para acortarla lista
             nuevatabla[indice]=actual; //asigno el primer y unico nodo ahora al indice 
             actual=siguiente;//reasigno el nodo actual como el siguiente nodo volviendo a tener a lista sin el nodo 1 
             }
@@ -249,17 +310,66 @@ public:
 
     void merge(const HashTable& otra) {
         // TODO: fusionar otra tabla hash con esta, evitando duplicados
+        
+        //recorro  ambas tablas y verifico nodos duplicados 
+        for(int i=0; i<CAP; i++ ){
+          
+            Nodo*actotra = otra.tabla[i];
+            while(actotra!=nullptr){
+             insertar(actotra->clave,actotra->valor);
+             
+                actotra=actotra->siguiente;
+            }
+            
+        }
+        
     }
 
     bool operator==(const HashTable& otra) const {
         // TODO: devolver true si ambas tablas contienen exactamente los mismos pares clave-valor
-        return false;
+        if(CAP != otra.CAP)return false;
+         for(int i=0; i<CAP; i++){
+             Nodo *actual=tabla[i];
+             Nodo* actotra= otra.tabla[i];
+             while(actual!=nullptr && actotra!=nullptr){
+                 
+                 if((actual->valor != actotra->valor ) || (actual->clave !=actotra->clave))return false;
+                 actual=actual->siguiente;
+                 actotra= actotra->siguiente;
+                 
+             }
+             if(actual!=nullptr || actotra !=nullptr)return false;
+             
+         }
+        
+        return true;
     }
 
-    HashTable invertir() const {
+    HashTable invertir() {
         // TODO: crear una nueva tabla donde los valores pasan a ser claves
-        return HashTable();
+        HashTable invertido;
+        for(int i=0; i<CAP; i++){
+            Nodo*actual=tabla[i];
+            
+            while(actual!=nullptr){
+                int clave_vieja=actual->clave;
+                string valor_viejo=actual->valor;
+                
+                int clave_new = hashFunctionstring(valor_viejo);
+                
+                string valor_new=to_string(clave_vieja);
+                
+                invertido.insertar(clave_new,valor_new);
+                actual=actual->siguiente;
+            }
+        }
+        
+        
+        return invertido;
     }
+    
+    
+
 };
 
 
