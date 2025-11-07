@@ -585,6 +585,380 @@ vector<int> ordenTopologico(Grafo& g) {
 
 ---
 
+## 📋 Ejercicios de Práctica {#ejercicios}
+
+### 🟢 Nivel Fácil
+
+#### **Ejercicio 1: Verificar conectividad**
+**Enunciado:** Dado un grafo y dos nodos A y B, determinar si existe un camino entre ellos.
+
+**Input:**
+```
+Grafo de 5 nodos
+Aristas: (0,1), (1,2), (3,4)
+¿Hay camino de 0 a 2? → SÍ
+¿Hay camino de 0 a 4? → NO
+```
+
+**Pista:** Usa BFS o DFS desde A. Si alcanzás B, hay camino.
+
+---
+
+#### **Ejercicio 2: Distancia entre dos nodos**
+**Enunciado:** Encontrar la menor cantidad de aristas entre dos nodos.
+
+**Input:**
+```
+Grafo:  0 --- 1 --- 3
+        |     |
+        2 --- 4
+        
+Distancia de 0 a 4: 2 (0→1→4)
+```
+
+**Pista:** BFS te da la distancia mínima automáticamente.
+
+---
+
+#### **Ejercicio 3: Contar componentes conexas**
+**Enunciado:** ¿Cuántos grupos separados de nodos hay?
+
+**Input:**
+```
+Grafo:  0 --- 1    3 --- 4    6
+        |
+        2          5
+
+Componentes: 3 grupos
+Grupo 1: {0, 1, 2}
+Grupo 2: {3, 4, 5}
+Grupo 3: {6}
+```
+
+**Pista:** Haz BFS/DFS desde cada nodo no visitado. Cada BFS nuevo = nueva componente.
+
+---
+
+#### **Ejercicio 4: Nodos a distancia K**
+**Enunciado:** Encuentra todos los nodos que están exactamente a K saltos del origen.
+
+**Input:**
+```
+Grafo: 0 --- 1 --- 3 --- 5
+       |     |
+       2     4
+
+K = 2 desde nodo 0
+Respuesta: {3, 4}
+```
+
+**Pista:** Usa BFS y filtra por `distancia[i] == K`.
+
+---
+
+#### **Ejercicio 5: Árbol o no árbol**
+**Enunciado:** Determinar si un grafo conexo es un árbol (sin ciclos y conectado).
+
+**Input:**
+```
+Grafo 1:  0 --- 1 --- 2    → Árbol ✅
+          |
+          3
+
+Grafo 2:  0 --- 1          → NO árbol ❌ (tiene ciclo)
+          |     |
+          3 --- 2
+```
+
+**Pista:** Un árbol con N nodos tiene exactamente N-1 aristas y no tiene ciclos.
+
+---
+
+### 🟡 Nivel Medio
+
+#### **Ejercicio 6: Matriz de distancias**
+**Enunciado:** Crear una matriz NxN donde `dist[i][j]` = distancia mínima de i a j.
+
+**Input:**
+```
+Grafo:  0 --- 1
+        |     |
+        2 --- 3
+
+Matriz de distancias:
+    0  1  2  3
+0 [ 0  1  1  2 ]
+1 [ 1  0  2  1 ]
+2 [ 1  2  0  1 ]
+3 [ 2  1  1  0 ]
+```
+
+**Pista:** Haz BFS desde cada nodo.
+
+---
+
+#### **Ejercicio 7: Centro del grafo**
+**Enunciado:** Encontrar el nodo cuya máxima distancia a cualquier otro nodo sea mínima.
+
+**Input:**
+```
+Grafo:  0 --- 1 --- 2 --- 3
+
+Distancias máximas desde cada nodo:
+Nodo 0: max=3 (hasta nodo 3)
+Nodo 1: max=2 (hasta nodos 0 o 3)
+Nodo 2: max=2 (hasta nodos 0 o 3)
+Nodo 3: max=3 (hasta nodo 0)
+
+Centro: nodos 1 o 2 (menor máximo=2)
+```
+
+**Pista:** BFS desde cada nodo, guarda el máximo, elige el mínimo de esos máximos.
+
+---
+
+#### **Ejercicio 8: Laberinto con obstáculos**
+**Enunciado:** Encontrar el camino más corto en una matriz donde 0=libre, 1=pared.
+
+**Input:**
+```
+Matriz 5x5:
+S 0 0 1 0
+0 1 0 1 0
+0 0 0 0 0
+1 1 1 0 0
+0 0 0 0 E
+
+S = inicio, E = fin
+Camino más corto: 8 pasos
+```
+
+**Pista:** BFS en grid, movimientos: arriba, abajo, izquierda, derecha.
+
+---
+
+#### **Ejercicio 9: Grafo bipartito**
+**Enunciado:** ¿Se puede colorear el grafo con 2 colores sin que nodos adyacentes tengan el mismo color?
+
+**Input:**
+```
+Grafo 1:  0 --- 1        Bipartito ✅
+          |     |        Colores: 0:{0,3} 1:{1,2}
+          3 --- 2
+
+Grafo 2:  0 --- 1        NO bipartito ❌
+          |   / |        (triángulo impar)
+          | /   |
+          2 --- 3
+```
+
+**Pista:** BFS coloreando con 0 y 1. Si un vecino tiene el mismo color, NO es bipartito.
+
+---
+
+#### **Ejercicio 10: Detectar ciclo en grafo dirigido**
+**Enunciado:** Determinar si un grafo dirigido tiene ciclos.
+
+**Input:**
+```
+Grafo 1:  0 → 1 → 2    NO tiene ciclo ✅
+
+Grafo 2:  0 → 1 → 2    Tiene ciclo ❌
+          ↑       ↓
+          └───────┘
+```
+
+**Pista:** DFS con seguimiento de nodos "en la pila actual".
+
+---
+
+#### **Ejercicio 11: Número de islas**
+**Enunciado:** Dada una matriz de 0s (agua) y 1s (tierra), contar las islas (1s conectados horizontal/verticalmente).
+
+**Input:**
+```
+Matriz:
+1 1 0 0 0
+1 1 0 0 1
+0 0 1 0 0
+0 0 0 1 1
+
+Islas: 4
+Isla 1: arriba-izquierda (2x2)
+Isla 2: arriba-derecha (1x1)
+Isla 3: centro (1x1)
+Isla 4: abajo-derecha (2x1)
+```
+
+**Pista:** BFS/DFS desde cada '1' no visitado, marca toda la isla.
+
+---
+
+#### **Ejercicio 12: Todos los caminos entre dos nodos**
+**Enunciado:** Encontrar TODOS los caminos posibles de A a B.
+
+**Input:**
+```
+Grafo:  0 --- 1
+        |  X  |
+        3 --- 2
+
+Caminos de 0 a 2:
+1. 0 → 1 → 2
+2. 0 → 3 → 2
+3. 0 → 1 → 3 → 2
+4. 0 → 3 → 1 → 2
+```
+
+**Pista:** DFS con backtracking. Guarda el camino actual y retrocede.
+
+---
+
+### 🔴 Nivel Difícil
+
+#### **Ejercicio 13: Ordenamiento topológico**
+**Enunciado:** Ordenar tareas respetando dependencias (grafo dirigido acíclico).
+
+**Input:**
+```
+Tareas: A, B, C, D, E
+Dependencias:
+A → C (A antes que C)
+B → C
+B → D
+C → E
+D → E
+
+Orden válido: A, B, C, D, E
+Otro válido:  B, A, C, D, E
+```
+
+**Pista:** DFS inverso o algoritmo de Kahn (BFS con grados de entrada).
+
+---
+
+#### **Ejercicio 14: Puentes del grafo**
+**Enunciado:** Encontrar aristas cuya eliminación desconecta el grafo.
+
+**Input:**
+```
+Grafo:  0 --- 1 --- 2
+        |           |
+        3 --------- 4
+
+Puentes: (1, 2) - si la quitas, 2 se separa
+```
+
+**Pista:** DFS con tiempos de descubrimiento y low-link.
+
+---
+
+#### **Ejercicio 15: Componentes fuertemente conexas (SCC)**
+**Enunciado:** En un grafo dirigido, encontrar grupos donde cada nodo alcanza a todos los demás del grupo.
+
+**Input:**
+```
+Grafo:  0 → 1 → 2
+        ↑   ↓   ↓
+        4 ← 3 ← ┘
+
+SCC: {0, 1, 3, 4}, {2}
+```
+
+**Pista:** Algoritmo de Kosaraju o Tarjan.
+
+---
+
+#### **Ejercicio 16: Escalera de palabras**
+**Enunciado:** Transformar una palabra en otra cambiando una letra a la vez (cada paso debe ser palabra válida).
+
+**Input:**
+```
+Inicio: "gato"
+Fin:    "lobo"
+Diccionario: {gato, pato, palo, polo, pobo, lobo}
+
+Camino: gato → pato → palo → polo → pobo → lobo
+Pasos: 5
+```
+
+**Pista:** BFS donde cada palabra es un nodo. Aristas = difieren en 1 letra.
+
+---
+
+#### **Ejercicio 17: Serpientes y escaleras**
+**Enunciado:** Mínimos lanzamientos de dado para llegar de casilla 1 a 100.
+
+**Input:**
+```
+Tablero 10x10 (casillas 1-100)
+Serpientes: 32→10, 62→19, 95→24
+Escaleras: 3→38, 8→44, 20→77
+
+Desde casilla 1, dado de 6 caras.
+¿Cuántos lanzamientos mínimos?
+```
+
+**Pista:** BFS donde cada casilla es un nodo. Desde casilla X puedes ir a X+1...X+6.
+
+---
+
+#### **Ejercicio 18: Alcanzabilidad con K paradas**
+**Enunciado:** ¿Puedes llegar de A a B con exactamente/máximo K saltos?
+
+**Input:**
+```
+Grafo:  0 --- 1 --- 3 --- 5
+        |     |
+        2     4
+
+¿De 0 a 5 con máximo 3 saltos? SÍ (0→1→3→5)
+¿De 0 a 5 con máximo 2 saltos? NO
+```
+
+**Pista:** BFS modificado: (nodo, pasos_restantes). Solo expandes si pasos > 0.
+
+---
+
+#### **Ejercicio 19: Alienígena perdido (Multi-source BFS)**
+**Enunciado:** Desde múltiples orígenes simultáneamente, encontrar el tiempo mínimo para alcanzar cada celda.
+
+**Input:**
+```
+Grid:  A 0 0 0
+       0 1 0 B
+       0 0 0 0
+
+A y B son alienígenas que se propagan.
+¿Cuándo alcanza cada celda?
+
+Tiempos:
+0 1 2 3
+1 X 1 0
+2 1 1 1
+```
+
+**Pista:** BFS inicial con TODOS los orígenes en la cola desde el principio.
+
+---
+
+#### **Ejercicio 20: Estado como nodo**
+**Enunciado:** Resolver el puzzle del "8-puzzle" (tablero 3x3 con números, un espacio vacío, mover hasta ordenar).
+
+**Input:**
+```
+Estado inicial:    Estado final:
+1 2 3              1 2 3
+4 _ 6              4 5 6
+7 5 8              7 8 _
+
+¿Cuántos movimientos mínimos?
+```
+
+**Pista:** BFS donde cada "nodo" es una configuración del tablero. Aristas = movimientos válidos.
+
+---
+
 ## 🎯 Problemas Resueltos Paso a Paso {#problemas}
 
 ### **Problema 1: Grados de Kevin Bacon**
