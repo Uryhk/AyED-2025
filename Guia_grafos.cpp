@@ -1,6 +1,6 @@
 /* ⚠️ GUÍA DE APLICACIONES BFS Y DFS
    Esta guía se enfoca en aplicaciones prácticas de BFS y DFS
-   usando LISTA DE ADYACENCIA (la más común y eficiente)
+   usando MATRIZ DE ADYACENCIA con ARRAYS ESTÁTICOS
 */
 
 #include <iostream>
@@ -8,55 +8,35 @@
 #include <stack>
 using namespace std;
 
-// Estructura para representar una arista
-struct Arista {
-    int destino;
-    Arista* siguiente;
-};
+const int MAX_V = 100; // Máximo número de vértices
 
 // ============================================
-// GRAFO - LISTA DE ADYACENCIA
+// GRAFO - MATRIZ DE ADYACENCIA (ARRAY ESTÁTICO)
 // ============================================
 class Grafo {
 private:
     int V; // Número de vértices
-    Arista** adj; // Arreglo de punteros a listas enlazadas
+    int adj[MAX_V][MAX_V]; // Matriz de adyacencia estática
     bool dirigido; // true = dirigido, false = no dirigido
     
 public:
     Grafo(int v, bool esDirigido = false) : V(v), dirigido(esDirigido) {
-        adj = new Arista*[V];
-        for (int i = 0; i < V; i++) {
-            adj[i] = nullptr;
-        }
-    }
-    
-    ~Grafo() {
-        for (int i = 0; i < V; i++) {
-            Arista* actual = adj[i];
-            while (actual != nullptr) {
-                Arista* temp = actual;
-                actual = actual->siguiente;
-                delete temp;
+        // Inicializar matriz en 0
+        for (int i = 0; i < MAX_V; i++) {
+            for (int j = 0; j < MAX_V; j++) {
+                adj[i][j] = 0;
             }
         }
-        delete[] adj;
     }
     
     // Agregar arista
     void agregarArista(int u, int v) {
         // IMPLEMENTAR:
-        // 1. Crear nueva arista de u a v:
-        //    Arista* nueva = new Arista;
-        //    nueva->destino = v;
-        //    nueva->siguiente = adj[u];
-        //    adj[u] = nueva;
-        // 2. Si NO es dirigido, agregar también de v a u:
+        // 1. Marcar arista de u a v:
+        //    adj[u][v] = 1;
+        // 2. Si NO es dirigido, marcar también de v a u:
         //    if (!dirigido) {
-        //        Arista* nueva2 = new Arista;
-        //        nueva2->destino = u;
-        //        nueva2->siguiente = adj[v];
-        //        adj[v] = nueva2;
+        //        adj[v][u] = 1;
         //    }
     }
     
@@ -65,19 +45,18 @@ public:
     // ============================================
     void BFS(int inicio) {
         // IMPLEMENTAR:
-        // 1. Crear arreglo: bool* visitado = new bool[V]
-        //    Inicializar todos en false
+        // 1. Crear arreglo: bool visitado[MAX_V] = {false};
         // 2. Crear cola: queue<int> cola;
         // 3. Marcar inicio como visitado y agregarlo a la cola
+        //    visitado[inicio] = true;
+        //    cola.push(inicio);
         // 4. Mientras la cola no esté vacía:
         //    - int actual = cola.front(); cola.pop();
         //    - Imprimir actual
-        //    - Recorrer lista adj[actual]:
-        //      * Para cada arista:
-        //        - Si destino no está visitado:
-        //          * Marcarlo como visitado
-        //          * Agregarlo a la cola
-        // 5. Liberar memoria: delete[] visitado;
+        //    - Recorrer todos los vértices j de 0 a V-1:
+        //      * Si adj[actual][j] == 1 && !visitado[j]:
+        //        - visitado[j] = true
+        //        - cola.push(j)
         
         cout << "\nBFS desde " << inicio << ": ";
         // Tu código aquí
@@ -87,28 +66,21 @@ public:
     // ============================================
     // APLICACIÓN 2: DFS RECURSIVO - Recorrido en profundidad
     // ============================================
-    void DFSRecursivoUtil(int v, bool* visitado) {
+    void DFSRecursivoUtil(int v, bool visitado[]) {
         // IMPLEMENTAR:
         // 1. Marcar v como visitado: visitado[v] = true;
         // 2. Imprimir v: cout << v << " ";
-        // 3. Recorrer lista adj[v]:
-        //    Arista* temp = adj[v];
-        //    while (temp != nullptr) {
-        //        if (!visitado[temp->destino]) {
-        //            DFSRecursivoUtil(temp->destino, visitado);
-        //        }
-        //        temp = temp->siguiente;
-        //    }
+        // 3. Recorrer todos los vértices j de 0 a V-1:
+        //    - Si adj[v][j] == 1 && !visitado[j]:
+        //      * DFSRecursivoUtil(j, visitado);
     }
     
     void DFSRecursivo(int inicio) {
         // IMPLEMENTAR:
-        // 1. Crear arreglo: bool* visitado = new bool[V]
-        //    Inicializar todos en false
+        // 1. Crear arreglo: bool visitado[MAX_V] = {false};
         // 2. cout << "\nDFS Recursivo desde " << inicio << ": ";
         // 3. Llamar a DFSRecursivoUtil(inicio, visitado);
         // 4. cout << endl;
-        // 5. Liberar memoria: delete[] visitado;
     }
     
     // ============================================
@@ -116,7 +88,7 @@ public:
     // ============================================
     void DFSIterativo(int inicio) {
         // IMPLEMENTAR:
-        // 1. Crear arreglo: bool* visitado = new bool[V]
+        // 1. Crear arreglo: bool visitado[MAX_V] = {false};
         // 2. Crear pila: stack<int> pila;
         // 3. pila.push(inicio);
         // 4. Mientras la pila no esté vacía:
@@ -124,8 +96,9 @@ public:
         //    - Si no está visitado:
         //      * Marcarlo como visitado
         //      * Imprimirlo
-        //      * Recorrer lista adj[actual] y agregar vecinos a la pila
-        // 5. Liberar memoria
+        //      * Recorrer j de 0 a V-1:
+        //        - Si adj[actual][j] == 1:
+        //          * pila.push(j)
         
         cout << "\nDFS Iterativo desde " << inicio << ": ";
         // Tu código aquí
@@ -138,23 +111,30 @@ public:
     void caminoMasCorto(int origen, int destino) {
         // IMPLEMENTAR:
         // 1. Crear arreglos:
-        //    bool* visitado = new bool[V];
-        //    int* distancia = new int[V];
-        //    int* padre = new int[V];
-        //    Inicializar: visitado=false, distancia=-1, padre=-1
+        //    bool visitado[MAX_V] = {false};
+        //    int distancia[MAX_V];
+        //    int padre[MAX_V];
+        //    for (int i = 0; i < V; i++) {
+        //        distancia[i] = -1;
+        //        padre[i] = -1;
+        //    }
         // 2. BFS desde origen:
         //    - distancia[origen] = 0, padre[origen] = -1
-        //    - Para cada vecino: distancia[vecino] = distancia[actual] + 1
+        //    - Para cada vecino j donde adj[actual][j] == 1:
+        //      * distancia[j] = distancia[actual] + 1
+        //      * padre[j] = actual
         // 3. Si distancia[destino] == -1:
         //    - cout << "No hay camino"
-        //    - Retornar
+        //    - return
         // 4. Reconstruir camino:
-        //    - Usar un stack<int> o arreglo temporal
+        //    - stack<int> camino;
         //    - int nodo = destino;
-        //    - while (nodo != -1) { guardar nodo; nodo = padre[nodo]; }
-        //    - Imprimir camino en orden correcto
+        //    - while (nodo != -1) {
+        //        camino.push(nodo);
+        //        nodo = padre[nodo];
+        //    }
+        //    - Imprimir camino desde la pila
         // 5. Imprimir distancia[destino]
-        // 6. Liberar memoria
         
         cout << "\nCamino más corto de " << origen << " a " << destino << ":" << endl;
         // Tu código aquí
@@ -165,14 +145,25 @@ public:
     // ============================================
     int contarComponentes() {
         // IMPLEMENTAR:
-        // 1. Crear arreglo: bool* visitado = new bool[V]
+        // 1. Crear arreglo: bool visitado[MAX_V] = {false};
         // 2. int componentes = 0;
         // 3. Para cada nodo i de 0 a V-1:
         //    - Si !visitado[i]:
         //      * componentes++;
-        //      * Hacer BFS/DFS desde i (marca todos los alcanzables)
-        // 4. Liberar memoria
-        // 5. return componentes;
+        //      * Hacer BFS desde i:
+        //        - queue<int> cola;
+        //        - cola.push(i);
+        //        - visitado[i] = true;
+        //        - while (!cola.empty()) {
+        //            int actual = cola.front(); cola.pop();
+        //            for (int j = 0; j < V; j++) {
+        //                if (adj[actual][j] == 1 && !visitado[j]) {
+        //                    visitado[j] = true;
+        //                    cola.push(j);
+        //                }
+        //            }
+        //        }
+        // 4. return componentes;
         
         // Tu código aquí
         return 0;
@@ -184,12 +175,14 @@ public:
     void nodosADistanciaK(int origen, int k) {
         // IMPLEMENTAR:
         // 1. Crear arreglos:
-        //    bool* visitado = new bool[V];
-        //    int* distancia = new int[V];
-        //    Inicializar en false y -1
+        //    bool visitado[MAX_V] = {false};
+        //    int distancia[MAX_V];
+        //    for (int i = 0; i < V; i++) distancia[i] = -1;
         // 2. BFS desde origen calculando distancias
+        //    - distancia[origen] = 0;
+        //    - Para cada vecino j donde adj[actual][j] == 1:
+        //      * distancia[j] = distancia[actual] + 1
         // 3. Recorrer distancia[] e imprimir nodos donde distancia[i] == k
-        // 4. Liberar memoria
         
         cout << "\nNodos a distancia " << k << " desde " << origen << ": ";
         // Tu código aquí
@@ -201,16 +194,31 @@ public:
     // ============================================
     bool esBipartito() {
         // IMPLEMENTAR:
-        // 1. Crear arreglo: int* color = new int[V]
-        //    Inicializar todos en -1
+        // 1. Crear arreglo: int color[MAX_V];
+        //    for (int i = 0; i < V; i++) color[i] = -1;
         // 2. Para cada componente (nodos no coloreados):
-        //    - BFS asignando colores 0 y 1 alternadamente
-        //    - color[inicio] = 0
-        //    - Para cada vecino:
-        //      * Si color[vecino] == -1: color[vecino] = 1 - color[actual]
-        //      * Si color[vecino] == color[actual]: return false
-        // 3. Liberar memoria
-        // 4. return true
+        //    for (int inicio = 0; inicio < V; inicio++) {
+        //        if (color[inicio] == -1) {
+        //            // BFS asignando colores 0 y 1
+        //            queue<int> cola;
+        //            cola.push(inicio);
+        //            color[inicio] = 0;
+        //            while (!cola.empty()) {
+        //                int actual = cola.front(); cola.pop();
+        //                for (int j = 0; j < V; j++) {
+        //                    if (adj[actual][j] == 1) {
+        //                        if (color[j] == -1) {
+        //                            color[j] = 1 - color[actual];
+        //                            cola.push(j);
+        //                        } else if (color[j] == color[actual]) {
+        //                            return false;
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        // 3. return true
         
         // Tu código aquí
         return false;
@@ -219,14 +227,14 @@ public:
     // ============================================
     // APLICACIÓN 8: DETECTAR CICLOS (Grafo NO dirigido)
     // ============================================
-    bool tieneCicloNoDirigidoUtil(int v, bool* visitado, int padre) {
+    bool tieneCicloNoDirigidoUtil(int v, bool visitado[], int padre) {
         // IMPLEMENTAR:
         // 1. visitado[v] = true;
-        // 2. Recorrer lista adj[v]:
-        //    - Para cada vecino:
-        //      * Si !visitado[vecino]:
-        //        - Si tieneCicloNoDirigidoUtil(vecino, visitado, v) return true
-        //      * Si visitado[vecino] && vecino != padre:
+        // 2. Recorrer todos los vértices j de 0 a V-1:
+        //    - Si adj[v][j] == 1:
+        //      * Si !visitado[j]:
+        //        - if (tieneCicloNoDirigidoUtil(j, visitado, v)) return true
+        //      * Si visitado[j] && j != padre:
         //        - return true (hay ciclo)
         // 3. return false
         
@@ -236,13 +244,12 @@ public:
     
     bool tieneCiclo() {
         // IMPLEMENTAR:
-        // 1. bool* visitado = new bool[V];
+        // 1. bool visitado[MAX_V] = {false};
         // 2. Si es dirigido: usar método diferente (con recStack)
         // 3. Si NO es dirigido:
-        //    - Para cada nodo no visitado:
-        //      * Si tieneCicloNoDirigidoUtil(i, visitado, -1) return true
-        // 4. Liberar memoria
-        // 5. return false
+        //    - Para cada nodo i no visitado:
+        //      * if (tieneCicloNoDirigidoUtil(i, visitado, -1)) return true
+        // 4. return false
         
         // Tu código aquí
         return false;
@@ -251,15 +258,15 @@ public:
     // ============================================
     // APLICACIÓN 9: DETECTAR CICLOS (Grafo DIRIGIDO)
     // ============================================
-    bool tieneCicloDirigidoUtil(int v, bool* visitado, bool* recStack) {
+    bool tieneCicloDirigidoUtil(int v, bool visitado[], bool recStack[]) {
         // IMPLEMENTAR:
         // 1. visitado[v] = true;
         //    recStack[v] = true;
-        // 2. Recorrer lista adj[v]:
-        //    - Para cada vecino:
-        //      * Si !visitado[vecino]:
-        //        - Si tieneCicloDirigidoUtil(vecino, ...) return true
-        //      * Si recStack[vecino]:
+        // 2. Recorrer todos los vértices j de 0 a V-1:
+        //    - Si adj[v][j] == 1:
+        //      * Si !visitado[j]:
+        //        - if (tieneCicloDirigidoUtil(j, visitado, recStack)) return true
+        //      * Si recStack[j]:
         //        - return true (hay ciclo)
         // 3. recStack[v] = false;
         // 4. return false
@@ -271,24 +278,27 @@ public:
     // ============================================
     // APLICACIÓN 10: ORDENAMIENTO TOPOLÓGICO
     // ============================================
-    void topoSortUtil(int v, bool* visitado, stack<int>& pila) {
+    void topoSortUtil(int v, bool visitado[], stack<int>& pila) {
         // IMPLEMENTAR:
         // 1. visitado[v] = true;
-        // 2. Recorrer lista adj[v]:
-        //    - Para cada vecino no visitado:
-        //      * topoSortUtil(vecino, visitado, pila);
+        // 2. Recorrer todos los vértices j de 0 a V-1:
+        //    - Si adj[v][j] == 1 && !visitado[j]:
+        //      * topoSortUtil(j, visitado, pila);
         // 3. pila.push(v); // Agregar DESPUÉS de procesar vecinos
     }
     
     void ordenamientoTopologico() {
         // IMPLEMENTAR:
         // 1. Verificar que sea dirigido y sin ciclos
-        // 2. bool* visitado = new bool[V];
+        // 2. bool visitado[MAX_V] = {false};
         //    stack<int> pila;
-        // 3. Para cada nodo no visitado:
-        //    - topoSortUtil(i, visitado, pila);
+        // 3. Para cada nodo i no visitado:
+        //    - if (!visitado[i]) topoSortUtil(i, visitado, pila);
         // 4. Imprimir contenido de la pila (es el orden topológico)
-        // 5. Liberar memoria
+        //    while (!pila.empty()) {
+        //        cout << pila.top() << " ";
+        //        pila.pop();
+        //    }
         
         cout << "\nOrdenamiento Topológico: ";
         // Tu código aquí
@@ -300,9 +310,22 @@ public:
     // ============================================
     bool hayConexion(int origen, int destino) {
         // IMPLEMENTAR:
-        // 1. BFS o DFS desde origen
-        // 2. Verificar si destino fue visitado
-        // 3. return true/false
+        // 1. bool visitado[MAX_V] = {false};
+        // 2. BFS desde origen:
+        //    queue<int> cola;
+        //    cola.push(origen);
+        //    visitado[origen] = true;
+        //    while (!cola.empty()) {
+        //        int actual = cola.front(); cola.pop();
+        //        if (actual == destino) return true;
+        //        for (int j = 0; j < V; j++) {
+        //            if (adj[actual][j] == 1 && !visitado[j]) {
+        //                visitado[j] = true;
+        //                cola.push(j);
+        //            }
+        //        }
+        //    }
+        // 3. return false
         
         // Tu código aquí
         return false;
@@ -311,15 +334,29 @@ public:
     // ============================================
     // APLICACIÓN 12: ÁRBOL DE EXPANSIÓN DFS
     // ============================================
+    void arbolExpansionDFSUtil(int v, bool visitado[], int padre[]) {
+        // IMPLEMENTAR:
+        // 1. visitado[v] = true;
+        // 2. for (int j = 0; j < V; j++) {
+        //        if (adj[v][j] == 1 && !visitado[j]) {
+        //            padre[j] = v;
+        //            arbolExpansionDFSUtil(j, visitado, padre);
+        //        }
+        //    }
+    }
+    
     void arbolExpansionDFS(int inicio) {
         // IMPLEMENTAR:
-        // 1. bool* visitado = new bool[V];
-        //    int* padre = new int[V];
-        //    Inicializar padre[i] = -1
-        // 2. DFS recursivo guardando el padre de cada nodo
-        // 3. Imprimir aristas del árbol:
-        //    Para cada i: if (padre[i] != -1) cout << padre[i] << " -> " << i
-        // 4. Liberar memoria
+        // 1. bool visitado[MAX_V] = {false};
+        //    int padre[MAX_V];
+        //    for (int i = 0; i < V; i++) padre[i] = -1;
+        // 2. arbolExpansionDFSUtil(inicio, visitado, padre);
+        // 3. cout << "Aristas del árbol:" << endl;
+        //    for (int i = 0; i < V; i++) {
+        //        if (padre[i] != -1) {
+        //            cout << padre[i] << " -> " << i << endl;
+        //        }
+        //    }
         
         cout << "\nÁrbol de expansión DFS desde " << inicio << ":" << endl;
         // Tu código aquí
@@ -328,27 +365,33 @@ public:
     // ============================================
     // APLICACIÓN 13: IMPRIMIR TODOS LOS CAMINOS
     // ============================================
-    void todosLosCaminosUtil(int actual, int destino, bool* visitado, 
-                             int* camino, int &indice) {
+    void todosLosCaminosUtil(int actual, int destino, bool visitado[], 
+                             int camino[], int &indice) {
         // IMPLEMENTAR:
-        // 1. Marcar actual como visitado
-        // 2. Agregar actual al camino: camino[indice++] = actual
-        // 3. Si actual == destino:
-        //    - Imprimir el camino
-        // 4. Si no:
-        //    - Para cada vecino no visitado:
-        //      * Recursión: todosLosCaminosUtil(vecino, ...)
-        // 5. Backtrack: indice--; visitado[actual] = false;
+        // 1. visitado[actual] = true;
+        //    camino[indice++] = actual;
+        // 2. Si actual == destino:
+        //    - cout << "Camino: ";
+        //    - for (int i = 0; i < indice; i++) cout << camino[i] << " ";
+        //    - cout << endl;
+        // 3. Si no:
+        //    - for (int j = 0; j < V; j++) {
+        //        if (adj[actual][j] == 1 && !visitado[j]) {
+        //            todosLosCaminosUtil(j, destino, visitado, camino, indice);
+        //        }
+        //    }
+        // 4. Backtrack:
+        //    indice--;
+        //    visitado[actual] = false;
     }
     
     void todosLosCaminos(int origen, int destino) {
         // IMPLEMENTAR:
-        // 1. bool* visitado = new bool[V];
-        //    int* camino = new int[V];
+        // 1. bool visitado[MAX_V] = {false};
+        //    int camino[MAX_V];
         //    int indice = 0;
-        // 2. cout << "\nTodos los caminos de " << origen << " a " << destino
+        // 2. cout << "\nTodos los caminos de " << origen << " a " << destino << ":\n";
         // 3. todosLosCaminosUtil(origen, destino, visitado, camino, indice);
-        // 4. Liberar memoria
         
         // Tu código aquí
     }
@@ -356,13 +399,16 @@ public:
     // Imprimir grafo
     void imprimir() {
         cout << "\nGrafo (" << (dirigido ? "Dirigido" : "No Dirigido") 
-             << ") - Lista de Adyacencia:" << endl;
+             << ") - Matriz de Adyacencia:" << endl;
+        cout << "   ";
         for (int i = 0; i < V; i++) {
-            cout << i << (dirigido ? " -> " : " -- ");
-            Arista* actual = adj[i];
-            while (actual != nullptr) {
-                cout << actual->destino << " ";
-                actual = actual->siguiente;
+            cout << i << " ";
+        }
+        cout << endl;
+        for (int i = 0; i < V; i++) {
+            cout << i << ": ";
+            for (int j = 0; j < V; j++) {
+                cout << adj[i][j] << " ";
             }
             cout << endl;
         }
@@ -373,25 +419,46 @@ public:
 // APLICACIONES ESPECIALES CON GRIDS/MATRICES
 // ============================================
 
+const int MAX_GRID = 100; // Tamaño máximo del grid
+
 // ============================================
 // APLICACIÓN 14: BFS EN LABERINTO/GRID
 // ============================================
-void bfsLaberinto(int** laberinto, int filas, int cols, 
+void bfsLaberinto(int laberinto[MAX_GRID][MAX_GRID], int filas, int cols, 
                   int inicioX, int inicioY, int finX, int finY) {
     // IMPLEMENTAR:
-    // 1. Crear matriz de visitados: bool** visitado
-    //    Inicializar en false
-    // 2. Crear matriz de distancias: int** distancia
-    //    Inicializar en -1
-    // 3. Cola de pares: queue<pair<int,int>> cola;
-    // 4. Movimientos: int dx[] = {0, 0, 1, -1};
+    // 1. Crear matrices:
+    //    bool visitado[MAX_GRID][MAX_GRID] = {false};
+    //    int distancia[MAX_GRID][MAX_GRID];
+    //    for (int i = 0; i < filas; i++)
+    //        for (int j = 0; j < cols; j++)
+    //            distancia[i][j] = -1;
+    // 2. queue<pair<int,int>> cola;
+    //    cola.push({inicioX, inicioY});
+    //    visitado[inicioX][inicioY] = true;
+    //    distancia[inicioX][inicioY] = 0;
+    // 3. Movimientos: int dx[] = {0, 0, 1, -1};
     //                 int dy[] = {1, -1, 0, 0};
-    // 5. BFS:
-    //    - Desde (inicioX, inicioY)
-    //    - Para cada posición, probar 4 direcciones
-    //    - Verificar límites y si es válido (laberinto[x][y] == 0)
-    // 6. Si alcanzamos (finX, finY), imprimir distancia
-    // 7. Liberar memoria de matrices dinámicas
+    // 4. BFS:
+    //    while (!cola.empty()) {
+    //        pair<int,int> actual = cola.front(); cola.pop();
+    //        int x = actual.first, y = actual.second;
+    //        if (x == finX && y == finY) {
+    //            cout << "Distancia: " << distancia[x][y] << endl;
+    //            return;
+    //        }
+    //        for (int i = 0; i < 4; i++) {
+    //            int nx = x + dx[i];
+    //            int ny = y + dy[i];
+    //            if (nx >= 0 && nx < filas && ny >= 0 && ny < cols &&
+    //                laberinto[nx][ny] == 0 && !visitado[nx][ny]) {
+    //                visitado[nx][ny] = true;
+    //                distancia[nx][ny] = distancia[x][y] + 1;
+    //                cola.push({nx, ny});
+    //            }
+    //        }
+    //    }
+    // 5. cout << "No hay camino" << endl;
     
     cout << "\nCamino más corto en laberinto:" << endl;
     // Tu código aquí
@@ -400,27 +467,35 @@ void bfsLaberinto(int** laberinto, int filas, int cols,
 // ============================================
 // APLICACIÓN 15: CONTAR ISLAS (DFS/BFS en matriz)
 // ============================================
-void dfsIsla(int** grid, bool** visitado, int filas, int cols, int x, int y) {
+void dfsIsla(int grid[MAX_GRID][MAX_GRID], bool visitado[MAX_GRID][MAX_GRID], 
+             int filas, int cols, int x, int y) {
     // IMPLEMENTAR:
-    // 1. Marcar (x, y) como visitado
-    // 2. Movimientos: dx[] = {0, 0, 1, -1}, dy[] = {1, -1, 0, 0}
-    // 3. Para cada dirección:
-    //    - Calcular nueva posición (nx, ny)
-    //    - Si está dentro de límites, es tierra (grid[nx][ny]==1) 
-    //      y no visitado:
-    //      * Llamar recursivamente dfsIsla(grid, visitado, filas, cols, nx, ny)
+    // 1. visitado[x][y] = true;
+    // 2. Movimientos: int dx[] = {0, 0, 1, -1};
+    //                 int dy[] = {1, -1, 0, 0};
+    // 3. for (int i = 0; i < 4; i++) {
+    //        int nx = x + dx[i];
+    //        int ny = y + dy[i];
+    //        if (nx >= 0 && nx < filas && ny >= 0 && ny < cols &&
+    //            grid[nx][ny] == 1 && !visitado[nx][ny]) {
+    //            dfsIsla(grid, visitado, filas, cols, nx, ny);
+    //        }
+    //    }
 }
 
-int contarIslas(int** grid, int filas, int cols) {
+int contarIslas(int grid[MAX_GRID][MAX_GRID], int filas, int cols) {
     // IMPLEMENTAR:
-    // 1. Crear matriz: bool** visitado
+    // 1. bool visitado[MAX_GRID][MAX_GRID] = {false};
     // 2. int islas = 0;
-    // 3. Para cada celda (i,j):
-    //    - Si grid[i][j] == 1 && !visitado[i][j]:
-    //      * islas++
-    //      * dfsIsla(grid, visitado, filas, cols, i, j)
-    // 4. Liberar memoria
-    // 5. return islas
+    // 3. for (int i = 0; i < filas; i++) {
+    //        for (int j = 0; j < cols; j++) {
+    //            if (grid[i][j] == 1 && !visitado[i][j]) {
+    //                islas++;
+    //                dfsIsla(grid, visitado, filas, cols, i, j);
+    //            }
+    //        }
+    //    }
+    // 4. return islas;
     
     // Tu código aquí
     return 0;
@@ -431,8 +506,8 @@ int contarIslas(int** grid, int filas, int cols) {
 // ============================================
 int main() {
     cout << "=== GUÍA DE APLICACIONES BFS Y DFS ===" << endl;
-    cout << "\n*** IMPLEMENTACIÓN CON LISTA DE ADYACENCIA ***" << endl;
-    cout << "(La más común y eficiente para la mayoría de casos)" << endl;
+    cout << "\n*** IMPLEMENTACIÓN CON MATRIZ DE ADYACENCIA ***" << endl;
+    cout << "*** USANDO ARRAYS ESTÁTICOS (SIN PUNTEROS) ***" << endl;
     
     cout << "\n--- APLICACIONES DISPONIBLES ---\n" << endl;
     
@@ -482,28 +557,23 @@ int main() {
     cout << "\ngDirigido.ordenamientoTopologico(); // Orden de tareas" << endl;
     cout << "gDirigido.tieneCiclo();             // Verificar ciclos" << endl;
     
+    cout << "\n--- VENTAJAS DE ARRAYS ESTÁTICOS ---" << endl;
+    cout << "✓ No hay que gestionar memoria (new/delete)" << endl;
+    cout << "✓ Código más simple y seguro" << endl;
+    cout << "✓ Acceso rápido: O(1)" << endl;
+    cout << "✓ No hay riesgo de memory leaks" << endl;
+    cout << "✗ Tamaño fijo: limitado a MAX_V nodos" << endl;
+    cout << "✗ Desperdicio de memoria si el grafo es pequeño" << endl;
+    
     cout << "\n--- COMPLEJIDADES ---" << endl;
-    cout << "BFS/DFS con Lista de Adyacencia: O(V + E)" << endl;
-    cout << "  donde V = vértices, E = aristas" << endl;
-    cout << "\nEspacio: O(V) para arreglos auxiliares" << endl;
+    cout << "BFS/DFS con Matriz: O(V²)" << endl;
+    cout << "Espacio: O(V²) para la matriz + O(V) para auxiliares" << endl;
     
-    cout << "\n--- GESTIÓN DE MEMORIA ---" << endl;
-    cout << "⚠️ IMPORTANTE: Siempre liberar memoria dinámica" << endl;
-    cout << "• Arreglos: delete[] nombreArray;" << endl;
-    cout << "• Matrices: for + delete[] + delete[]" << endl;
-    cout << "• Listas: while + delete cada nodo" << endl;
-    
-    cout << "\n--- CUÁNDO USAR QUÉ ---" << endl;
-    cout << "✓ BFS: Caminos más cortos, distancias, niveles" << endl;
-    cout << "✓ DFS: Ciclos, topológico, backtracking, árboles" << endl;
-    cout << "✓ BFS en grid: Laberintos, propagación" << endl;
-    cout << "✓ DFS en grid: Islas, flood fill" << endl;
-    
-    cout << "\n--- VENTAJAS LISTA DE ADYACENCIA ---" << endl;
-    cout << "✓ Eficiente en memoria para grafos dispersos" << endl;
-    cout << "✓ Rápido para recorrer vecinos" << endl;
-    cout << "✓ Fácil de agregar/quitar aristas" << endl;
-    cout << "✓ Complejidad óptima O(V + E)" << endl;
+    cout << "\n--- CUÁNDO USAR ARRAYS ESTÁTICOS ---" << endl;
+    cout << "✓ Tamaño del grafo conocido y pequeño (V < 1000)" << endl;
+    cout << "✓ Programación competitiva (rapidez de implementación)" << endl;
+    cout << "✓ Código educativo (más fácil de entender)" << endl;
+    cout << "✓ Sistemas embebidos (memoria stack)" << endl;
     
     return 0;
 }
