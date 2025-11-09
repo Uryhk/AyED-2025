@@ -1,0 +1,921 @@
+# Guía Práctica de Álgebra Lineal
+## Resolución de Ejercicios Paso a Paso Detallado
+
+---
+
+## 1. Complemento Ortogonal
+
+### Concepto
+S⊥ son TODOS los vectores perpendiculares a TODO vector de S
+
+### Ejemplo 1: Complemento de un subespacio generado
+
+**Problema:** Encontrar S⊥ donde S = Gen{(1,2,1), (0,1,1)} en ℝ³
+
+**Solución MUY detallada:**
+
+```
+Paso 1: Entiendo qué necesito
+Busco todos los vectores (x,y,z) tales que sean perpendiculares 
+a AMBOS vectores generadores de S
+
+Paso 2: Escribo la condición de perpendicularidad con el primer vector
+⟨(x,y,z), (1,2,1)⟩ = 0
+
+Desarrollo el producto interno:
+x·1 + y·2 + z·1 = 0
+x + 2y + z = 0  ... (ecuación 1)
+
+Paso 3: Escribo la condición de perpendicularidad con el segundo vector
+⟨(x,y,z), (0,1,1)⟩ = 0
+
+Desarrollo el producto interno:
+x·0 + y·1 + z·1 = 0
+y + z = 0  ... (ecuación 2)
+
+Paso 4: Armo la matriz aumentada del sistema
+[1  2  1 | 0]
+[0  1  1 | 0]
+
+Paso 5: La matriz ya está escalonada, resuelvo de abajo hacia arriba
+De la fila 2: y + z = 0
+              y = -z
+
+Paso 6: Reemplazo y = -z en la fila 1
+x + 2y + z = 0
+x + 2(-z) + z = 0
+x - 2z + z = 0
+x - z = 0
+x = z
+
+Paso 7: Identifico variables libres y dependientes
+Variable libre: z (puedo elegir cualquier valor)
+Variables dependientes: x = z, y = -z
+
+Paso 8: Parametrizo con z = t
+Si z = t, entonces:
+x = t
+y = -t
+z = t
+
+Escribo la solución: (x,y,z) = (t, -t, t)
+
+Paso 9: Factorizo el parámetro
+(x,y,z) = t(1, -1, 1)
+
+Esto significa que todos los vectores de S⊥ son múltiplos de (1,-1,1)
+```
+
+**Respuesta:** S⊥ = Gen{(1,-1,1)}
+
+**Verificación detallada:**
+```
+Verifico que (1,-1,1) sea perpendicular a (1,2,1):
+⟨(1,-1,1), (1,2,1)⟩ = 1·1 + (-1)·2 + 1·1
+                     = 1 - 2 + 1
+                     = 0 ✓
+
+Verifico que (1,-1,1) sea perpendicular a (0,1,1):
+⟨(1,-1,1), (0,1,1)⟩ = 1·0 + (-1)·1 + 1·1
+                     = 0 - 1 + 1
+                     = 0 ✓
+
+Verifico dimensiones:
+dim(S) = 2 (tiene 2 generadores L.I.)
+dim(S⊥) = 1 (tiene 1 generador)
+dim(S) + dim(S⊥) = 2 + 1 = 3 = dim(ℝ³) ✓
+```
+
+### Ejemplo 2: Complemento de una recta
+
+**Problema:** S = Gen{(1,0,2)} en ℝ³
+
+**Solución paso a paso:**
+```
+Paso 1: Busco vectores (x,y,z) perpendiculares a (1,0,2)
+⟨(x,y,z), (1,0,2)⟩ = 0
+
+Paso 2: Desarrollo el producto interno
+x·1 + y·0 + z·2 = 0
+x + 0 + 2z = 0
+x + 2z = 0
+
+Paso 3: Despejo x en función de z
+x = -2z
+
+Paso 4: Observo que tengo UNA ecuación con TRES incógnitas
+Esto significa que tengo 2 variables libres
+Variables libres: y y z (puedo elegir sus valores)
+Variable dependiente: x = -2z
+
+Paso 5: Parametrizo usando DOS parámetros
+Sea y = s (primer parámetro)
+Sea z = t (segundo parámetro)
+Entonces x = -2t
+
+Paso 6: Escribo la solución general
+(x, y, z) = (-2t, s, t)
+
+Paso 7: Separo en dos componentes
+(x, y, z) = (-2t, 0, t) + (0, s, 0)
+          = t(-2, 0, 1) + s(0, 1, 0)
+
+Paso 8: Identifico los generadores
+```
+
+**Respuesta:** S⊥ = Gen{(-2,0,1), (0,1,0)}
+
+**Interpretación geométrica:**
+```
+S es una RECTA (dimensión 1)
+S⊥ es un PLANO (dimensión 2)
+El plano es perpendicular a la recta
+1 + 2 = 3 ✓
+```
+
+**Verificación:**
+```
+Verifico (-2,0,1) ⊥ (1,0,2):
+⟨(-2,0,1), (1,0,2)⟩ = (-2)·1 + 0·0 + 1·2
+                     = -2 + 0 + 2
+                     = 0 ✓
+
+Verifico (0,1,0) ⊥ (1,0,2):
+⟨(0,1,0), (1,0,2)⟩ = 0·1 + 1·0 + 0·2
+                    = 0 + 0 + 0
+                    = 0 ✓
+```
+
+---
+
+## 2. Distancia de Vector a Subespacio
+
+### Fórmula
+d(v, S) = ||v - proyₛ(v)||
+
+### Ejemplo con base ortonormal
+
+**Problema:** Distancia de v = (1,2,3) a S = Gen{(1,0,0), (0,1,0)} (plano xy)
+
+**Solución DETALLADA:**
+
+```
+Paso 1: Verifico si la base es ortogonal
+u₁ = (1,0,0)
+u₂ = (0,1,0)
+
+Producto interno: ⟨u₁, u₂⟩ = 1·0 + 0·1 + 0·0 = 0 ✓ SON ORTOGONALES
+
+Paso 2: Verifico si la base es ortonormal (norma = 1)
+||u₁|| = √(1² + 0² + 0²) = √1 = 1 ✓
+||u₂|| = √(0² + 1² + 0²) = √1 = 1 ✓
+SON ORTONORMALES
+
+Paso 3: Como la base es ortonormal, uso la fórmula simplificada
+proyₛ(v) = ⟨v,u₁⟩·u₁ + ⟨v,u₂⟩·u₂
+
+Paso 4: Calculo ⟨v,u₁⟩
+v = (1,2,3)
+u₁ = (1,0,0)
+⟨v,u₁⟩ = 1·1 + 2·0 + 3·0 = 1 + 0 + 0 = 1
+
+Paso 5: Calculo ⟨v,u₂⟩
+u₂ = (0,1,0)
+⟨v,u₂⟩ = 1·0 + 2·1 + 3·0 = 0 + 2 + 0 = 2
+
+Paso 6: Calculo la proyección
+proyₛ(v) = 1·(1,0,0) + 2·(0,1,0)
+         = (1,0,0) + (0,2,0)
+         = (1+0, 0+2, 0+0)
+         = (1,2,0)
+
+Paso 7: Calculo el vector diferencia (el "residuo")
+v - proyₛ(v) = (1,2,3) - (1,2,0)
+             = (1-1, 2-2, 3-0)
+             = (0,0,3)
+
+Paso 8: Calculo la norma (distancia)
+d = ||(0,0,3)|| = √(0² + 0² + 3²)
+                = √(0 + 0 + 9)
+                = √9
+                = 3
+```
+
+**Respuesta:** d = 3
+
+**Interpretación:** La distancia es 3, que es exactamente la coordenada z del punto original. Tiene sentido porque S es el plano xy (z=0), y el punto está a altura 3.
+
+### Ejemplo con base NO ortogonal
+
+**Problema:** Distancia de v = (2,2,0) a S = Gen{(1,1,0), (1,0,1)}
+
+**Solución COMPLETA con Gram-Schmidt:**
+
+```
+Paso 1: Observo que la base NO es ortogonal
+v₁ = (1,1,0)
+v₂ = (1,0,1)
+
+Verifico: ⟨v₁, v₂⟩ = 1·1 + 1·0 + 0·1 = 1 + 0 + 0 = 1 ≠ 0
+NO SON ORTOGONALES, necesito Gram-Schmidt
+
+Paso 2: GRAM-SCHMIDT - Primer vector se queda igual
+u₁ = v₁ = (1,1,0)
+
+Paso 3: GRAM-SCHMIDT - Segundo vector
+Fórmula: u₂ = v₂ - proyᵤ₁(v₂)
+
+Primero calculo la proyección de v₂ sobre u₁:
+proyᵤ₁(v₂) = [⟨v₂,u₁⟩ / ⟨u₁,u₁⟩] · u₁
+
+Paso 4: Calculo ⟨v₂,u₁⟩
+v₂ = (1,0,1)
+u₁ = (1,1,0)
+⟨v₂,u₁⟩ = 1·1 + 0·1 + 1·0 = 1 + 0 + 0 = 1
+
+Paso 5: Calculo ⟨u₁,u₁⟩
+⟨u₁,u₁⟩ = 1·1 + 1·1 + 0·0 = 1 + 1 + 0 = 2
+
+Paso 6: Calculo la proyección
+proyᵤ₁(v₂) = (1/2) · (1,1,0)
+           = (1/2, 1/2, 0)
+
+Paso 7: Resto para obtener u₂
+u₂ = v₂ - proyᵤ₁(v₂)
+   = (1,0,1) - (1/2, 1/2, 0)
+   = (1 - 1/2, 0 - 1/2, 1 - 0)
+   = (1/2, -1/2, 1)
+
+Paso 8: (Opcional) Multiplico por 2 para evitar fracciones
+u₂ = 2 · (1/2, -1/2, 1) = (1, -1, 2)
+
+Paso 9: Verifico que sean ortogonales
+⟨u₁, u₂⟩ = 1·1 + 1·(-1) + 0·2 = 1 - 1 + 0 = 0 ✓
+
+Paso 10: Ahora tengo base ortogonal {u₁, u₂} = {(1,1,0), (1,-1,2)}
+Calculo la proyección de v sobre S
+
+proyₛ(v) = [⟨v,u₁⟩/⟨u₁,u₁⟩]u₁ + [⟨v,u₂⟩/⟨u₂,u₂⟩]u₂
+
+Paso 11: Calculo ⟨v,u₁⟩
+v = (2,2,0)
+u₁ = (1,1,0)
+⟨v,u₁⟩ = 2·1 + 2·1 + 0·0 = 2 + 2 + 0 = 4
+
+Paso 12: Ya calculé ⟨u₁,u₁⟩ = 2
+
+Paso 13: Primera componente de la proyección
+[⟨v,u₁⟩/⟨u₁,u₁⟩]u₁ = (4/2)(1,1,0) = 2(1,1,0) = (2,2,0)
+
+Paso 14: Calculo ⟨v,u₂⟩
+u₂ = (1,-1,2)
+⟨v,u₂⟩ = 2·1 + 2·(-1) + 0·2 = 2 - 2 + 0 = 0
+
+Paso 15: Segunda componente de la proyección
+[⟨v,u₂⟩/⟨u₂,u₂⟩]u₂ = (0/6)(1,-1,2) = (0,0,0)
+
+Paso 16: Sumo las componentes
+proyₛ(v) = (2,2,0) + (0,0,0) = (2,2,0)
+
+Paso 17: ¡Sorpresa! El vector ya está en S
+v - proyₛ(v) = (2,2,0) - (2,2,0) = (0,0,0)
+
+Paso 18: Distancia
+d = ||(0,0,0)|| = 0
+```
+
+**Respuesta:** d = 0 (el vector pertenece al subespacio)
+
+---
+
+## 3. Gram-Schmidt Completo
+
+**Problema:** Ortogonalizar {v₁=(1,1,1), v₂=(1,2,0), v₃=(0,1,2)} en ℝ³
+
+**Solución PASO A PASO:**
+
+```
+Paso 1: Primer vector se mantiene
+u₁ = v₁ = (1,1,1)
+
+Paso 2: Segundo vector - quitar componente en dirección u₁
+Fórmula: u₂ = v₂ - proyᵤ₁(v₂)
+
+Paso 3: Calculo proyᵤ₁(v₂) = [⟨v₂,u₁⟩/⟨u₁,u₁⟩]u₁
+
+Paso 4: Calculo ⟨v₂,u₁⟩
+v₂ = (1,2,0)
+u₁ = (1,1,1)
+⟨v₂,u₁⟩ = 1·1 + 2·1 + 0·1 = 1 + 2 + 0 = 3
+
+Paso 5: Calculo ⟨u₁,u₁⟩
+⟨u₁,u₁⟩ = 1·1 + 1·1 + 1·1 = 1 + 1 + 1 = 3
+
+Paso 6: Calculo la proyección
+proyᵤ₁(v₂) = (3/3)(1,1,1) = 1·(1,1,1) = (1,1,1)
+
+Paso 7: Resto para obtener u₂
+u₂ = v₂ - proyᵤ₁(v₂)
+   = (1,2,0) - (1,1,1)
+   = (1-1, 2-1, 0-1)
+   = (0,1,-1)
+
+Paso 8: Verifico ortogonalidad entre u₁ y u₂
+⟨u₁,u₂⟩ = 1·0 + 1·1 + 1·(-1) = 0 + 1 - 1 = 0 ✓
+
+Paso 9: Tercer vector - quitar componentes en direcciones u₁ y u₂
+Fórmula: u₃ = v₃ - proyᵤ₁(v₃) - proyᵤ₂(v₃)
+
+Paso 10: Calculo proyᵤ₁(v₃)
+⟨v₃,u₁⟩ = 0·1 + 1·1 + 2·1 = 0 + 1 + 2 = 3
+⟨u₁,u₁⟩ = 3 (ya calculado)
+proyᵤ₁(v₃) = (3/3)(1,1,1) = (1,1,1)
+
+Paso 11: Calculo proyᵤ₂(v₃)
+v₃ = (0,1,2)
+u₂ = (0,1,-1)
+⟨v₃,u₂⟩ = 0·0 + 1·1 + 2·(-1) = 0 + 1 - 2 = -1
+
+Paso 12: Calculo ⟨u₂,u₂⟩
+⟨u₂,u₂⟩ = 0·0 + 1·1 + (-1)·(-1) = 0 + 1 + 1 = 2
+
+Paso 13: Calculo proyᵤ₂(v₃)
+proyᵤ₂(v₃) = (-1/2)(0,1,-1) = (0, -1/2, 1/2)
+
+Paso 14: Resto ambas proyecciones
+u₃ = v₃ - proyᵤ₁(v₃) - proyᵤ₂(v₃)
+   = (0,1,2) - (1,1,1) - (0,-1/2,1/2)
+   = (0-1-0, 1-1-(-1/2), 2-1-1/2)
+   = (-1, 1/2, 1/2)
+
+Paso 15: Multiplico por 2 para evitar fracciones
+u₃ = 2·(-1, 1/2, 1/2) = (-2, 1, 1)
+
+Paso 16: Verifico ortogonalidad completa
+⟨u₁,u₃⟩ = 1·(-2) + 1·1 + 1·1 = -2 + 1 + 1 = 0 ✓
+⟨u₂,u₃⟩ = 0·(-2) + 1·1 + (-1)·1 = 0 + 1 - 1 = 0 ✓
+```
+
+**Respuesta:** Base ortogonal {(1,1,1), (0,1,-1), (-2,1,1)}
+
+**Para ortonormalizar:**
+```
+Paso 1: Normalizo u₁
+||u₁|| = √(1² + 1² + 1²) = √3
+e₁ = (1/√3, 1/√3, 1/√3)
+
+Paso 2: Normalizo u₂
+||u₂|| = √(0² + 1² + (-1)²) = √2
+e₂ = (0, 1/√2, -1/√2)
+
+Paso 3: Normalizo u₃
+||u₃|| = √((-2)² + 1² + 1²) = √(4+1+1) = √6
+e₃ = (-2/√6, 1/√6, 1/√6)
+```
+
+---
+
+## 4. Valores y Vectores Propios
+
+**Problema:** A = [4  2]
+              [1  3]
+
+**Solución COMPLETAMENTE DETALLADA:**
+
+```
+PARTE 1: ENCONTRAR VALORES PROPIOS
+
+Paso 1: Escribo la matriz A - λI
+A - λI = [4  2] - λ[1  0]
+         [1  3]     [0  1]
+
+Paso 2: Resto λ de la diagonal
+A - λI = [4  2] - [λ  0]
+         [1  3]   [0  λ]
+
+       = [4-λ    2  ]
+         [1    3-λ]
+
+Paso 3: Calculo el determinante
+det(A - λI) = (4-λ)(3-λ) - 2·1
+
+Paso 4: Expando (4-λ)(3-λ)
+(4-λ)(3-λ) = 4·3 + 4·(-λ) + (-λ)·3 + (-λ)·(-λ)
+           = 12 - 4λ - 3λ + λ²
+           = 12 - 7λ + λ²
+           = λ² - 7λ + 12
+
+Paso 5: Resto 2·1
+det(A - λI) = λ² - 7λ + 12 - 2
+            = λ² - 7λ + 10
+
+Paso 6: Igualo a cero (polinomio característico)
+λ² - 7λ + 10 = 0
+
+Paso 7: Factorizo (busco dos números que sumen -7 y multipliquen 10)
+Los números son -5 y -2 porque:
+(-5) + (-2) = -7 ✓
+(-5) × (-2) = 10 ✓
+
+λ² - 7λ + 10 = (λ - 5)(λ - 2) = 0
+
+Paso 8: Soluciones
+λ - 5 = 0  →  λ₁ = 5
+λ - 2 = 0  →  λ₂ = 2
+
+PARTE 2: VECTORES PROPIOS PARA λ₁ = 5
+
+Paso 9: Planteo (A - 5I)x = 0
+A - 5I = [4-5    2  ] = [-1   2]
+         [1    3-5]   [ 1  -2]
+
+Paso 10: Sistema homogéneo
+[-1   2][x]   [0]
+[ 1  -2][y] = [0]
+
+Paso 11: Escribo las ecuaciones
+-x + 2y = 0  ... ecuación 1
+ x - 2y = 0  ... ecuación 2
+
+Paso 12: De la ecuación 1 despejo x
+-x + 2y = 0
+-x = -2y
+x = 2y
+
+Paso 13: Verifico con ecuación 2
+x - 2y = 0
+2y - 2y = 0
+0 = 0 ✓ (consistente)
+
+Paso 14: Parametrizo con y = t
+Si y = t, entonces x = 2t
+Vector propio: (x,y) = (2t, t) = t(2,1)
+
+Paso 15: Elijo t = 1 para obtener un vector específico
+v₁ = (2,1)
+
+PARTE 3: VECTORES PROPIOS PARA λ₂ = 2
+
+Paso 16: Planteo (A - 2I)x = 0
+A - 2I = [4-2    2  ] = [2   2]
+         [1    3-2]   [1   1]
+
+Paso 17: Sistema homogéneo
+[2   2][x]   [0]
+[1   1][y] = [0]
+
+Paso 18: Escribo las ecuaciones
+2x + 2y = 0  ... ecuación 1
+x + y = 0    ... ecuación 2
+
+Paso 19: De la ecuación 2 despejo x
+x + y = 0
+x = -y
+
+Paso 20: Verifico con ecuación 1
+2x + 2y = 0
+2(-y) + 2y = 0
+-2y + 2y = 0
+0 = 0 ✓
+
+Paso 21: Parametrizo con y = s
+Si y = s, entonces x = -s
+Vector propio: (x,y) = (-s, s) = s(-1,1)
+
+Paso 22: Elijo s = 1
+v₂ = (-1,1)
+```
+
+**Respuesta:**
+- λ₁ = 5 con vector propio v₁ = (2,1)
+- λ₂ = 2 con vector propio v₂ = (-1,1)
+
+**Verificación:**
+```
+Verifico Av₁ = 5v₁:
+Av₁ = [4  2][2]  = [4·2 + 2·1]  = [8+2]  = [10]
+      [1  3][1]    [1·2 + 3·1]    [2+3]    [5]
+
+5v₁ = 5[2] = [10]
+       [1]   [5]   ✓
+
+Verifico Av₂ = 2v₂:
+Av₂ = [4  2][-1] = [4·(-1) + 2·1] = [-4+2] = [-2]
+      [1  3][ 1]   [1·(-1) + 3·1]   [-1+3]   [2]
+
+2v₂ = 2[-1] = [-2]
+       [ 1]   [ 2]  ✓
+```
+
+---
+
+## 5. Diagonalización
+
+**Problema:** Diagonalizar A = [4  2]
+                              [1  3]
+
+**Solución (continuando del ejemplo anterior):**
+
+```
+Paso 1: Ya tengo los valores propios y vectores propios
+λ₁ = 5, v₁ = (2,1)
+λ₂ = 2, v₂ = (-1,1)
+
+Paso 2: Verifico que los vectores propios sean L.I.
+Para que sean L.I., el único α y β que satisfacen αv₁ + βv₂ = 0 
+debe ser α = β = 0
+
+α(2,1) + β(-1,1) = (0,0)
+(2α - β, α + β) = (0,0)
+
+Sistema:
+2α - β = 0
+α + β = 0
+
+De la segunda: β = -α
+Reemplazo: 2α - (-α) = 0 → 3α = 0 → α = 0, β = 0 ✓
+
+SON LINEALMENTE INDEPENDIENTES
+
+Paso 3: Construyo la matriz P con vectores propios en columnas
+P = [v₁ | v₂] = [2  -1]
+                [1   1]
+
+Paso 4: Construyo la matriz D con valores propios en la diagonal
+D = [λ₁  0 ] = [5  0]
+    [0  λ₂]   [0  2]
+
+Paso 5: Necesito calcular P⁻¹
+Primero calculo det(P)
+det(P) = 2·1 - (-1)·1 = 2 - (-1) = 2 + 1 = 3
+
+Paso 6: Matriz de cofactores
+Para matriz 2×2: [a  b]⁻¹ = (1/det) [ d  -b]
+                 [c  d]              [-c   a]
+
+P⁻¹ = (1/3)[ 1  -(-1)] = (1/3)[1   1]
+           [-1    2  ]        [-1  2]
+
+     = [1/3   1/3]
+       [-1/3  2/3]
+
+Paso 7: Verifico que P⁻¹AP = D
+Primero calculo AP:
+
+AP = [4  2][2  -1]
+     [1  3][1   1]
+
+Fila 1, Columna 1: 4·2 + 2·1 = 8 + 2 = 10
+Fila 1, Columna 2: 4·(-1) + 2·1 = -4 + 2 = -2
+Fila 2, Columna 1: 1·2 + 3·1 = 2 + 3 = 5
+Fila 2, Columna 2: 1·(-1) + 3·1 = -1 + 3 = 2
+
+AP = [10  -2]
+     [5    2]
+
+Paso 8: Ahora P⁻¹(AP)
+
+P⁻¹(AP) = [1/3   1/3][10  -2]
+          [-1/3  2/3][5    2]
+
+Fila 1, Columna 1: (1/3)·10 + (1/3)·5 = 10/3 + 5/3 = 15/3 = 5
+Fila 1, Columna 2: (1/3)·(-2) + (1/3)·2 = -2/3 + 2/3 = 0
+Fila 2, Columna 1: (-1/3)·10 + (2/3)·5 = -10/3 + 10/3 = 0
+Fila 2, Columna 2: (-1/3)·(-2) + (2/3)·2 = 2/3 + 4/3 = 6/3 = 2
+
+P⁻¹AP = [5  0] = D ✓
+        [0  2]
+```
+
+**Respuesta:** 
+- P = [2  -1]
+      [1   1]
+- D = [5  0]
+      [0  2]
+- P⁻¹AP = D
+
+---
+
+## 6. Diagonalización Ortogonal
+
+**Problema:** A = [3  1]  (verificar que es simétrica y diagonalizar)
+              [1  3]
+
+**Solución COMPLETA:**
+
+```
+PARTE 1: VERIFICAR QUE ES SIMÉTRICA
+
+Paso 1: Calculo la transpuesta Aᵀ
+A = [3  1]
+    [1  3]
+
+Aᵀ = [3  1]  (intercambio filas por columnas)
+     [1  3]
+
+Paso 2: Comparo A con Aᵀ
+A = Aᵀ ✓  ES SIMÉTRICA
+
+Conclusión: Como A es simétrica, SÉ que puedo diagonalizarla ortogonalmente
+
+PARTE 2: VALORES PROPIOS
+
+Paso 3: Planteo det(A - λI) = 0
+A - λI = [3-λ    1  ]
+         [1    3-λ]
+
+Paso 4: Calculo el determinante
+det(A - λI) = (3-λ)(3-λ) - 1·1
+
+Paso 5: Expando (3-λ)²
+(3-λ)² = 9 - 6λ + λ²
+
+Paso 6: Resto 1
+det(A - λI) = 9 - 6λ + λ² - 1
+            = λ² - 6λ + 8
+
+Paso 7: Igualo a cero
+λ² - 6λ + 8 = 0
+
+Paso 8: Factorizo (busco dos números que sumen -6 y multipliquen 8)
+Los números son -4 y -2:
+(-4) + (-2) = -6 ✓
+(-4) × (-2) = 8 ✓
+
+λ² - 6λ + 8 = (λ - 4)(λ - 2) = 0
+
+Paso 9: Valores propios
+λ₁ = 4
+λ₂ = 2
+
+PARTE 3: VECTOR PROPIO PARA λ₁ = 4
+
+Paso 10: Planteo (A - 4I)x = 0
+A - 4I = [3-4    1  ] = [-1   1]
+         [1    3-4]   [ 1  -1]
+
+Paso 11: Sistema
+[-1   1][x]   [0]
+[ 1  -1][y] = [0]
+
+Paso 12: Ecuaciones
+-x + y = 0
+ x - y = 0
+
+Paso 13: De la primera ecuación
+-x + y = 0
+y = x
+
+Paso 14: Parametrizo con x = t
+Si x = t, entonces y = t
+Vector: (t, t) = t(1, 1)
+
+Paso 15: Elijo t = 1
+v₁ = (1, 1)
+
+PARTE 4: VECTOR PROPIO PARA λ₂ = 2
+
+Paso 16: Planteo (A - 2I)x = 0
+A - 2I = [3-2    1  ] = [1   1]
+         [1    3-2]   [1   1]
+
+Paso 17: Sistema
+[1   1][x]   [0]
+[1   1][y] = [0]
+
+Paso 18: Ecuación (ambas filas son iguales)
+x + y = 0
+
+Paso 19: Despejo
+y = -x
+
+Paso 20: Parametrizo con x = s
+Si x = s, entonces y = -s
+Vector: (s, -s) = s(1, -1)
+
+Paso 21: Elijo s = 1
+v₂ = (1, -1)
+
+PARTE 5: VERIFICAR ORTOGONALIDAD (¡Teoría dice que deben serlo!)
+
+Paso 22: Calculo producto interno
+⟨v₁, v₂⟩ = 1·1 + 1·(-1) = 1 - 1 = 0 ✓
+
+SON ORTOGONALES (como predijo la teoría)
+
+PARTE 6: NORMALIZAR PARA MATRIZ ORTOGONAL
+
+Paso 23: Normalizo v₁
+||v₁|| = √(1² + 1²) = √(1 + 1) = √2
+
+u₁ = v₁/||v₁|| = (1, 1)/√2 = (1/√2, 1/√2)
+
+Paso 24: Normalizo v₂
+||v₂|| = √(1² + (-1)²) = √(1 + 1) = √2
+
+u₂ = v₂/||v₂|| = (1, -1)/√2 = (1/√2, -1/√2)
+
+PARTE 7: CONSTRUIR MATRICES
+
+Paso 25: Matriz P ortogonal (columnas = vectores ortonormales)
+P = [1/√2   1/√2]
+    [1/√2  -1/√2]
+
+Paso 26: Matriz D
+D = [4  0]
+    [0  2]
+
+Paso 27: Verifico que P sea ortogonal (Pᵀ = P⁻¹, o sea PᵀP = I)
+
+Calculo Pᵀ:
+Pᵀ = [1/√2   1/√2]  (intercambio filas y columnas)
+     [1/√2  -1/√2]
+
+Calculo PᵀP:
+PᵀP = [1/√2   1/√2][1/√2   1/√2]
+      [1/√2  -1/√2][1/√2  -1/√2]
+
+Fila 1, Col 1: (1/√2)·(1/√2) + (1/√2)·(1/√2) = 1/2 + 1/2 = 1
+Fila 1, Col 2: (1/√2)·(1/√2) + (1/√2)·(-1/√2) = 1/2 - 1/2 = 0
+Fila 2, Col 1: (1/√2)·(1/√2) + (-1/√2)·(1/√2) = 1/2 - 1/2 = 0
+Fila 2, Col 2: (1/√2)·(1/√2) + (-1/√2)·(-1/√2) = 1/2 + 1/2 = 1
+
+PᵀP = [1  0] = I ✓
+      [0  1]
+
+Por lo tanto: P⁻¹ = Pᵀ
+
+Paso 28: Verifico PᵀAP = D
+
+Primero AP:
+AP = [3  1][1/√2   1/√2]
+     [1  3][1/√2  -1/√2]
+
+Fila 1, Col 1: 3·(1/√2) + 1·(1/√2) = 3/√2 + 1/√2 = 4/√2
+Fila 1, Col 2: 3·(1/√2) + 1·(-1/√2) = 3/√2 - 1/√2 = 2/√2
+Fila 2, Col 1: 1·(1/√2) + 3·(1/√2) = 1/√2 + 3/√2 = 4/√2
+Fila 2, Col 2: 1·(1/√2) + 3·(-1/√2) = 1/√2 - 3/√2 = -2/√2
+
+AP = [4/√2   2/√2]
+     [4/√2  -2/√2]
+
+Ahora Pᵀ(AP):
+PᵀAP = [1/√2   1/√2][4/√2   2/√2]
+       [1/√2  -1/√2][4/√2  -2/√2]
+
+Fila 1, Col 1: (1/√2)·(4/√2) + (1/√2)·(4/√2) = 4/2 + 4/2 = 2 + 2 = 4
+Fila 1, Col 2: (1/√2)·(2/√2) + (1/√2)·(-2/√2) = 2/2 - 2/2 = 1 - 1 = 0
+Fila 2, Col 1: (1/√2)·(4/√2) + (-1/√2)·(4/√2) = 4/2 - 4/2 = 2 - 2 = 0
+Fila 2, Col 2: (1/√2)·(2/√2) + (-1/√2)·(-2/√2) = 2/2 + 2/2 = 1 + 1 = 2
+
+PᵀAP = [4  0] = D ✓
+       [0  2]
+```
+
+**Respuesta:**
+- P = [1/√2   1/√2]  (ortogonal)
+      [1/√2  -1/√2]
+- D = [4  0]
+      [0  2]
+- PᵀAP = D y Pᵀ = P⁻¹
+
+---
+
+## 7. Cambio de Base
+
+**Problema:** En ℝ², cambiar v = (5, 3) de la base canónica B = {(1,0), (0,1)} 
+a la base B' = {(2,1), (1,2)}
+
+**Solución DETALLADA:**
+
+```
+Paso 1: Entiendo qué me piden
+Tengo v expresado en base canónica: v = 5(1,0) + 3(0,1) = (5,3)
+Quiero expresar v en base B': v = α(2,1) + β(1,2)
+Busco α y β
+
+Paso 2: Planteo la ecuación
+(5,3) = α(2,1) + β(1,2)
+
+Paso 3: Expando el lado derecho
+(5,3) = (2α, α) + (β, 2β)
+(5,3) = (2α + β, α + 2β)
+
+Paso 4: Igualo componente por componente
+2α + β = 5  ... ecuación 1
+α + 2β = 3  ... ecuación 2
+
+Paso 5: Escribo la matriz aumentada
+[2  1 | 5]
+[1  2 | 3]
+
+Paso 6: Escalonamiento - intercambio filas para tener 1 arriba
+[1  2 | 3]
+[2  1 | 5]
+
+Paso 7: Elimino el 2 de la posición (2,1)
+F₂ - 2F₁ → F₂
+
+Fila 2 nueva: [2-2·1  1-2·2  |  5-2·3]
+            = [2-2    1-4    |  5-6]
+            = [0     -3     | -1]
+
+Matriz escalonada:
+[1   2  |  3]
+[0  -3  | -1]
+
+Paso 8: Resuelvo de abajo hacia arriba
+De fila 2: -3β = -1
+          β = 1/3
+
+Paso 9: Sustituyo en fila 1
+α + 2β = 3
+α + 2(1/3) = 3
+α + 2/3 = 3
+α = 3 - 2/3
+α = 9/3 - 2/3
+α = 7/3
+
+Paso 10: Escribo las coordenadas en la nueva base
+[v]ᵦ' = (7/3, 1/3)
+
+Paso 11: VERIFICACIÓN
+Calculo: (7/3)(2,1) + (1/3)(1,2)
+       = (14/3, 7/3) + (1/3, 2/3)
+       = (14/3 + 1/3, 7/3 + 2/3)
+       = (15/3, 9/3)
+       = (5, 3) ✓
+```
+
+**Respuesta:** [v]ᵦ' = (7/3, 1/3)
+
+### Matriz de Cambio de Base
+
+```
+Paso 1: Construir M(B'→B)
+Esta matriz tiene en sus COLUMNAS los vectores de B' expresados en B
+
+Como B es canónica, los vectores de B' ya están en esa base:
+M(B'→B) = [(2,1) | (1,2)] = [2  1]
+                              [1  2]
+
+Paso 2: Usar la matriz para transformar coordenadas
+[v]ᵦ = M(B'→B) · [v]ᵦ'
+
+Verifico:
+[2  1][7/3]   [2·7/3 + 1·1/3]   [14/3 + 1/3]   [15/3]   [5]
+[1  2][1/3] = [1·7/3 + 2·1/3] = [7/3 + 2/3]  = [9/3]  = [3] ✓
+
+Paso 3: Para ir al revés (B→B'), necesito la inversa
+M(B→B') = [M(B'→B)]⁻¹
+
+Calculo la inversa:
+det(M) = 2·2 - 1·1 = 4 - 1 = 3
+
+M⁻¹ = (1/3)[2  -1] = [2/3  -1/3]
+           [-1   2]   [-1/3  2/3]
+
+Paso 4: Verifico con v = (5,3)
+[v]ᵦ' = M⁻¹ · [v]ᵦ
+
+[2/3  -1/3][5]   [2/3·5 - 1/3·3]   [10/3 - 3/3]   [7/3]
+[-1/3  2/3][3] = [-1/3·5 + 2/3·3] = [-5/3 + 6/3] = [1/3] ✓
+```
+
+---
+
+## 8. Transformación Lineal
+
+**Problema:** T: ℝ² → ℝ³ definida por T(x,y) = (x+y, 2x-y, x)
+Verificar que es lineal y encontrar núcleo e imagen
+
+**Solución PASO A PASO:**
+
+```
+PARTE 1: VERIFICAR LINEALIDAD
+
+Paso 1: Debo verificar T(αu + βv) = αT(u) + βT(v)
+
+Sean u = (u₁, u₂) y v = (v₁, v₂)
+
+Paso 2: Calculo el lado izquierdo
+αu + βv = α(u₁, u₂) + β(v₁, v₂)
+        = (αu₁, αu₂) + (βv₁, βv₂)
+        = (αu₁ + βv₁, αu₂ + βv₂)
+
+Paso 3: Aplico T al resultado
+T(αu + βv) = T(αu₁ + βv₁, αu₂ + βv₂)
+           = ((αu₁+βv₁) + (αu₂+βv₂), 2(αu₁+βv₁) - (αu₂+βv₂), (αu₁+βv₁))
+
+Paso 4: Expando
+Primera componente: αu₁ + βv₁ + αu₂ + βv₂ = α(u₁+u₂) + β(v₁+v₂)
+Segunda componente: 2αu₁ + 2βv₁ - αu₂ - βv₂ = α(2u₁-u₂) + β(2v₁-v₂)
+Tercera componente: αu₁ + βv₁
+
+T(αu + βv) = (α(u₁+u₂) + β(v₁+v₂), α(2u₁-u₂) + β(2v₁-v₂), αu₁ + βv₁)
+
+Paso 5: Calculo el lado derecho
+T(u) = (u₁+u₂, 2u₁-u₂, u₁)
+T(v) = (v₁+v₂, 2v₁-v₂, v₁)
+
+αT(u) + βT(v) = α(u₁+u₂, 2u₁-u₂, u₁) + β(v₁+v₂, 2v₁-v₂,
