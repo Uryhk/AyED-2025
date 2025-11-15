@@ -1,0 +1,556 @@
+# 📚 Guía de Práctica: Árboles y Grafos
+## Para Aprobar el Parcial de Algoritmos
+
+---
+
+## 🎯 PARTE 1: LECTURA DE ENUNCIADOS
+
+### Ejercicio de Traducción 1
+**Enunciado:** "Implementar `int buscar(int valor)` que devuelve el índice donde se encuentra `valor`. Si no existe, devolver -1. Si la lista está vacía, devolver -1."
+
+**Pregunta:** ¿Qué validaciones necesitás?
+
+<details>
+<summary>Ver respuesta</summary>
+
+```cpp
+int buscar(int valor) {
+    // Validación: lista vacía
+    if (lista == nullptr) {
+        return -1;
+    }
+    
+    // Búsqueda normal...
+    // Si no se encuentra, return -1
+}
+```
+</details>
+
+---
+
+### Ejercicio de Traducción 2
+**Enunciado:** "Implementar `void eliminar(int pos)` que elimina el nodo en la posición `pos`. Si `pos` está fuera de rango [0, size), no hacer nada."
+
+**Pregunta:** ¿Qué validaciones necesitás?
+
+<details>
+<summary>Ver respuesta</summary>
+
+```cpp
+void eliminar(int pos) {
+    // Validación: fuera de rango
+    if (pos < 0 || pos >= size) {
+        return; // No hacer nada
+    }
+    
+    // Eliminar...
+}
+```
+</details>
+
+---
+
+### Ejercicio de Traducción 3
+**Enunciado:** "Calcular la suma de todos los nodos con valor mayor a 10. Si el árbol está vacío, devolver 0."
+
+**Pregunta:** ¿Qué validaciones necesitás?
+
+<details>
+<summary>Ver respuesta</summary>
+
+```cpp
+int sumarMayoresA10(Nodo* nodo) {
+    // Caso base: árbol vacío
+    if (nodo == nullptr) {
+        return 0;
+    }
+    
+    // Sumar solo si valor > 10
+    int suma = (nodo->dato > 10) ? nodo->dato : 0;
+    
+    return suma + sumarMayoresA10(nodo->izq) + sumarMayoresA10(nodo->der);
+}
+```
+</details>
+
+---
+
+## 🌳 PARTE 2: ÁRBOLES BINARIOS - RECURSIÓN
+
+### Nivel 1: Contar y Recorrer
+
+#### Ejercicio 2.1: Contar nodos
+```cpp
+/**
+ * Devolver la cantidad total de nodos del árbol.
+ * Si está vacío, devolver 0.
+ */
+struct Nodo {
+    int dato;
+    Nodo* izq;
+    Nodo* der;
+};
+
+int contarNodos(Nodo* nodo) {
+    // COMPLETAR
+}
+```
+
+**Pistas:**
+- Caso base: `nodo == nullptr`
+- ¿Qué devuelvo en caso base?
+- ¿Cómo combino izq + der?
+
+---
+
+#### Ejercicio 2.2: Contar hojas
+```cpp
+/**
+ * Devolver la cantidad de hojas (nodos sin hijos).
+ * Si está vacío, devolver 0.
+ */
+int contarHojas(Nodo* nodo) {
+    // COMPLETAR
+}
+```
+
+**Pistas:**
+- ¿Cuándo un nodo es hoja?
+- Necesitás 2 casos base
+
+---
+
+#### Ejercicio 2.3: Altura del árbol
+```cpp
+/**
+ * Devolver la altura del árbol (longitud del camino más largo
+ * desde raíz hasta hoja).
+ * Un árbol vacío tiene altura -1.
+ * Un árbol con solo raíz tiene altura 0.
+ */
+int altura(Nodo* nodo) {
+    // COMPLETAR
+}
+```
+
+**Pistas:**
+- ¿Qué devuelvo si es nullptr?
+- ¿Uso max() o min() para combinar?
+
+---
+
+### Nivel 2: Búsqueda y Validación
+
+#### Ejercicio 2.4: Buscar valor
+```cpp
+/**
+ * Devolver true si el valor existe en el árbol.
+ * Si está vacío, devolver false.
+ */
+bool existe(Nodo* nodo, int valor) {
+    // COMPLETAR
+}
+```
+
+**Pistas:**
+- ¿Cuándo devuelvo true inmediatamente?
+- Uso OR (||) o AND (&&) para combinar?
+
+---
+
+#### Ejercicio 2.5: Encontrar máximo
+```cpp
+/**
+ * Devolver el valor máximo del árbol.
+ * Si está vacío, devolver INT_MIN.
+ */
+int encontrarMaximo(Nodo* nodo) {
+    // COMPLETAR
+}
+```
+
+**Pistas:**
+- Necesitás comparar: nodo->dato vs max(izq, der)
+- Incluí `<climits>` para INT_MIN
+
+---
+
+#### Ejercicio 2.6: Verificar si es BST
+```cpp
+/**
+ * Devolver true si el árbol es un Árbol Binario de Búsqueda
+ * (todos los nodos izquierdos < raíz < todos los derechos).
+ * Un árbol vacío es BST.
+ */
+bool esBST(Nodo* nodo, int minValor, int maxValor) {
+    // COMPLETAR
+}
+```
+
+**Pistas:**
+- Pasá rangos válidos [min, max] en cada llamada
+- Iniciá con `esBST(raiz, INT_MIN, INT_MAX)`
+
+---
+
+### Nivel 3: Casos Especiales
+
+#### Ejercicio 2.7: Contar nodos con exactamente un hijo
+```cpp
+/**
+ * Devolver cantidad de nodos que tienen exactamente UN hijo
+ * (izquierdo o derecho, pero no ambos).
+ */
+int contarNodosConUnHijo(Nodo* nodo) {
+    // COMPLETAR
+}
+```
+
+---
+
+#### Ejercicio 2.8: Verificar si está balanceado
+```cpp
+/**
+ * Un árbol está balanceado si para cada nodo,
+ * |altura(izq) - altura(der)| <= 1.
+ * Devolver true si está balanceado.
+ */
+bool esBalanceado(Nodo* nodo) {
+    // COMPLETAR
+    // Pista: necesitás una función auxiliar que devuelva
+    // la altura Y actualice un flag de balanceado
+}
+```
+
+---
+
+#### Ejercicio 2.9: Suma de caminos
+```cpp
+/**
+ * Devolver la suma de todos los caminos desde raíz hasta hojas.
+ * Ejemplo: árbol con raíz=1, izq=2, der=3
+ * Caminos: 1->2 (suma 3), 1->3 (suma 4)
+ * Total: 7
+ */
+int sumaCaminos(Nodo* nodo, int sumaActual) {
+    // COMPLETAR
+}
+```
+
+---
+
+## 🕸️ PARTE 3: GRAFOS - BFS
+
+### Nivel 1: Básicos
+
+#### Ejercicio 3.1: Contar nodos alcanzables
+```cpp
+/**
+ * Dado un grafo y un nodo origen, devolver la cantidad
+ * de nodos alcanzables desde origen (incluyendo origen).
+ * Si origen está fuera de rango [0, nodeCount), devolver 0.
+ */
+class Grafo {
+public:
+    static const int MAX = 10;
+    int adj[MAX][MAX];
+    int nodeCount;
+    
+    int contarAlcanzables(int origen);
+};
+
+int Grafo::contarAlcanzables(int origen) {
+    // COMPLETAR
+}
+```
+
+---
+
+#### Ejercicio 3.2: Verificar conexión
+```cpp
+/**
+ * Devolver true si TODOS los nodos son alcanzables desde el nodo 0.
+ * (El grafo es conexo desde 0).
+ */
+bool esConexo() {
+    // COMPLETAR
+    // Pista: hacé BFS desde 0 y contá cuántos visitaste
+}
+```
+
+---
+
+#### Ejercicio 3.3: Distancia mínima
+```cpp
+/**
+ * Devolver la distancia mínima (cantidad de aristas)
+ * entre origen y destino.
+ * Si no hay camino, devolver -1.
+ * Si origen == destino, devolver 0.
+ */
+int distanciaMinima(int origen, int destino) {
+    // COMPLETAR
+    // Pista: guardá la distancia junto con cada nodo en la cola
+}
+```
+
+---
+
+### Nivel 2: Con Condiciones
+
+#### Ejercicio 3.4: Camino evitando nodo
+```cpp
+/**
+ * Devolver true si existe un camino de origen a destino
+ * SIN pasar por el nodo bloqueado.
+ * Si origen o destino == bloqueado, devolver false.
+ */
+bool existeCaminoEvitando(int origen, int destino, int bloqueado) {
+    // COMPLETAR
+}
+```
+
+---
+
+#### Ejercicio 3.5: Nivel de un nodo
+```cpp
+/**
+ * Devolver el nivel (distancia desde raíz=0) del nodo buscado.
+ * Si no existe, devolver -1.
+ * Raíz está en nivel 0.
+ */
+int nivelDelNodo(int raiz, int buscado) {
+    // COMPLETAR
+}
+```
+
+---
+
+## 🔄 PARTE 4: GRAFOS - DFS RECURSIVO
+
+### Nivel 1: Básicos
+
+#### Ejercicio 4.1: Contar alcanzables (DFS)
+```cpp
+/**
+ * Igual que 3.1 pero usando DFS recursivo.
+ */
+int contarAlcanzablesDFS(int origen, bool visitado[]) {
+    // COMPLETAR
+}
+```
+
+---
+
+#### Ejercicio 4.2: Detectar ciclo
+```cpp
+/**
+ * Devolver true si el grafo DIRIGIDO tiene al menos un ciclo.
+ */
+class GrafoDirigido {
+public:
+    static const int MAX = 10;
+    int adj[MAX][MAX];
+    int nodeCount;
+    
+    bool tieneCiclo();
+    
+private:
+    bool tieneCicloDFS(int nodo, bool visitado[], bool enProceso[]);
+};
+
+bool GrafoDirigido::tieneCiclo() {
+    // COMPLETAR
+    // Pista: necesitás 2 arrays: visitado[] y enProceso[]
+}
+```
+
+---
+
+#### Ejercicio 4.3: Encontrar componentes conexas
+```cpp
+/**
+ * Devolver la cantidad de componentes conexas en un grafo NO dirigido.
+ * Ejemplo: Si tenés 3 "islas" separadas, devolver 3.
+ */
+int contarComponentesConexas() {
+    // COMPLETAR
+    // Pista: hacé DFS desde cada nodo no visitado
+}
+```
+
+---
+
+## 🎓 PARTE 5: EJERCICIOS INTEGRADORES
+
+### Ejercicio 5.1: Árbol desde lista de adyacencia
+```cpp
+/**
+ * Dado un grafo que representa un árbol (sin ciclos),
+ * calcular su altura usando BFS desde la raíz.
+ * La raíz es el nodo 0.
+ */
+int alturaArbolDesdeBFS(int raiz) {
+    // COMPLETAR
+}
+```
+
+---
+
+### Ejercicio 5.2: Validar árbol binario desde grafo
+```cpp
+/**
+ * Dado un grafo, devolver true si representa un árbol binario válido:
+ * - Cada nodo tiene como máximo 2 hijos
+ * - No hay ciclos
+ * - Hay exactamente un nodo raíz (sin padres)
+ */
+bool esArbolBinarioValido() {
+    // COMPLETAR
+}
+```
+
+---
+
+## 📋 CHECKLIST PARA CADA EJERCICIO
+
+Antes de escribir código, completá esto en papel:
+
+```
+┌─────────────────────────────────────┐
+│ ANÁLISIS DEL PROBLEMA               │
+├─────────────────────────────────────┤
+│ ¿Qué me dan?                        │
+│ □ Árbol / Grafo / Lista             │
+│ □ ¿Qué atributos tiene?             │
+│                                     │
+│ ¿Qué me piden?                      │
+│ □ Contar / Buscar / Verificar       │
+│ □ ¿Qué tipo devuelvo?               │
+│                                     │
+│ ¿Validaciones?                      │
+│ □ nullptr / vacío                   │
+│ □ Fuera de rango                    │
+│ □ Casos especiales                  │
+│                                     │
+│ ¿Algoritmo?                         │
+│ □ BFS (cola + visitados)            │
+│ □ DFS recursivo (caso base)         │
+│ □ Otro                              │
+│                                     │
+│ ¿Qué necesito?                      │
+│ □ Cola / Stack                      │
+│ □ Array de visitados                │
+│ □ Contador / Flag                   │
+│ □ Variables auxiliares              │
+└─────────────────────────────────────┘
+```
+
+---
+
+## 🎯 MÉTODO DE LAS 5 PREGUNTAS (Recursión)
+
+Para CADA ejercicio recursivo:
+
+1. **¿Qué estructura?** (árbol binario, lista, grafo)
+2. **¿Caso base?** (nullptr, vacío, encontrado)
+3. **¿Qué hago con el nodo actual?** (contar, comparar, sumar)
+4. **¿Qué hago con resultados recursivos?** (sumar, max, and, or)
+5. **¿Qué devuelvo?** (int, bool, void, puntero)
+
+---
+
+## 💡 PLANTILLAS DE CÓDIGO
+
+### Plantilla BFS:
+```cpp
+int metodoBFS(int origen) {
+    // 1. Validaciones
+    if (origen < 0 || origen >= nodeCount) return -1;
+    
+    // 2. Estructuras
+    bool visitado[nodeCount] = {false};
+    queue<int> cola;
+    
+    // 3. Iniciar
+    visitado[origen] = true;
+    cola.push(origen);
+    
+    // 4. Procesar
+    while (!cola.empty()) {
+        int actual = cola.front();
+        cola.pop();
+        
+        // Hacer algo con actual...
+        
+        // Procesar vecinos
+        for (int i = 0; i < nodeCount; i++) {
+            if (adj[actual][i] == 1 && !visitado[i]) {
+                visitado[i] = true;
+                cola.push(i);
+            }
+        }
+    }
+    
+    // 5. Devolver resultado
+    return resultado;
+}
+```
+
+### Plantilla DFS Recursivo:
+```cpp
+int metodoDFS(Nodo* nodo) {
+    // 1. Caso base
+    if (nodo == nullptr) {
+        return valor_base;
+    }
+    
+    // 2. Procesar nodo actual
+    int resultado_actual = // ...
+    
+    // 3. Llamadas recursivas
+    int resultado_izq = metodoDFS(nodo->izq);
+    int resultado_der = metodoDFS(nodo->der);
+    
+    // 4. Combinar y devolver
+    return combinar(resultado_actual, resultado_izq, resultado_der);
+}
+```
+
+---
+
+## 🚀 PLAN DE ESTUDIO SUGERIDO
+
+### Día 1-2: Árboles básicos
+- Ejercicios 2.1 a 2.3
+- Practicar el método de las 5 preguntas
+
+### Día 3-4: Árboles intermedios
+- Ejercicios 2.4 a 2.6
+- Enfocarse en casos base múltiples
+
+### Día 5-6: Grafos BFS
+- Ejercicios 3.1 a 3.3
+- Memorizar la plantilla BFS
+
+### Día 7-8: Grafos DFS
+- Ejercicios 4.1 a 4.3
+- Combinar con recursión de árboles
+
+### Día 9-10: Repaso e integradores
+- Ejercicios 5.1 a 5.2
+- Hacer ejercicios de parciales anteriores
+
+---
+
+## ✅ TIPS FINALES
+
+1. **No veas las respuestas inmediatamente**: Intentá 15-20 min antes de mirar
+2. **Usá papel**: Dibujá el árbol/grafo antes de codear
+3. **Escribí comentarios primero**: El código viene después
+4. **Revisá el checklist**: Antes de dar por terminado
+5. **Simulá con ejemplos chicos**: Árbol de 3 nodos, grafo de 4 nodos
+
+---
+
+**¿Dudas? Consultá antes del parcial. ¡Éxitos!** 🎓
